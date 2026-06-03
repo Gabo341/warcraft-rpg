@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warcraft RPG — Mapa de Flags</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:    #C9A84C;
+  --gold-lt: #E8C97A;
+  --gold-dk: #7A5C1E;
+  --stone:   #1A1814;
+  --stone2:  #22201C;
+  --stone3:  #2E2B24;
+  --stone4:  #3D3930;
+  --fog:     #8C8070;
+  --parch:   #EDE4CC;
+
+  --light:  #1D9E75;
+  --light-lt: #82E0AA;
+  --dark:   #7F77DD;
+  --dark-lt: #C39BD3;
+  --neutral: #C9A84C;
+  --neutral-lt: #E8C97A;
+  --danger: #B03A2E;
+  --danger-lt: #F1948A;
+
+  --r: 10px;
+  --r-sm: 6px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--stone);
+  color: var(--parch);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.6;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -5%, #1a1005 0%, transparent 65%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.03) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.03) 40px);
+}
+
+header {
+  text-align: center;
+  padding: 2.5rem 1rem 1.5rem;
+}
+header::after {
+  content: '';
+  display: block;
+  width: 55%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1.2rem auto 0;
+}
+.eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+  color: var(--gold-lt);
+  font-weight: 700;
+  text-shadow: 0 0 40px rgba(201,168,76,0.25);
+}
+.subtitle {
+  color: var(--fog);
+  font-style: italic;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+.container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin: 2.2rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.section-title::before, .section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+}
+.section-title::before { background: linear-gradient(90deg, transparent, var(--gold-dk)); }
+.section-title::after  { background: linear-gradient(90deg, var(--gold-dk), transparent); }
+
+/* ── COMO FUNCIONA ── */
+.how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.how-card {
+  background: var(--stone2);
+  border: 1px solid var(--stone4);
+  border-radius: var(--r);
+  padding: 1.1rem 1.3rem;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+.how-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.4rem;
+  color: var(--gold-dk);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.how-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  color: var(--gold-lt);
+  margin-bottom: 0.2rem;
+}
+.how-desc { font-size: 0.83rem; color: var(--fog); line-height: 1.45; }
+
+/* ── LEGEND PILLS ── */
+.legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.leg-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.leg-light   { color: var(--light-lt);   border-color: var(--light);   background: rgba(29,158,117,0.12); }
+.leg-dark    { color: var(--dark-lt);    border-color: var(--dark);    background: rgba(127,119,221,0.12); }
+.leg-neutral { color: var(--neutral-lt); border-color: var(--neutral); background: rgba(201,168,76,0.12); }
+.leg-gate    { color: var(--danger-lt);  border-color: var(--danger);  background: rgba(176,58,46,0.12); }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot-light   { background: var(--light); }
+.dot-dark    { background: var(--dark); }
+.dot-neutral { background: var(--neutral); }
+.dot-gate    { background: var(--danger); }
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.filter-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--stone4);
+  background: var(--stone2);
+  color: var(--fog);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn:hover { border-color: var(--gold-dk); color: var(--gold-lt); }
+.filter-btn.active { border-color: var(--gold); background: rgba(201,168,76,0.12); color: var(--gold-lt); }
+
+/* ── ACT BLOCK ── */
+.act-block { margin-bottom: 1.5rem; }
+.act-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+.act-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.act-1 { background: rgba(29,158,117,0.15);  border: 1px solid var(--light);   color: var(--light-lt); }
+.act-2 { background: rgba(201,168,76,0.15);  border: 1px solid var(--neutral); color: var(--neutral-lt); }
+.act-3 { background: rgba(127,119,221,0.15); border: 1px solid var(--dark);    color: var(--dark-lt); }
+.act-4 { background: rgba(176,58,46,0.15);   border: 1px solid var(--danger);  color: var(--danger-lt); }
+
+.act-desc { font-size: 0.85rem; color: var(--fog); font-style: italic; }
+
+/* ── FLAG CARDS ── */
+.flags-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 0.9rem;
+}
+
+.flag-card {
+  background: var(--stone2);
+  border: 1px solid var(--stone4);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s;
+  position: relative;
+}
+.flag-card:hover { transform: translateY(-2px); }
+.flag-card.type-light  { border-left: 3px solid var(--light); }
+.flag-card.type-light:hover  { border-color: var(--light); }
+.flag-card.type-dark   { border-left: 3px solid var(--dark); }
+.flag-card.type-dark:hover   { border-color: var(--dark); }
+.flag-card.type-neutral{ border-left: 3px solid var(--neutral); }
+.flag-card.type-neutral:hover{ border-color: var(--neutral); }
+.flag-card.type-gate   { border-left: 3px solid var(--danger); }
+.flag-card.type-gate:hover   { border-color: var(--danger); }
+
+.flag-card.hidden-flag { display: none; }
+
+.flag-top {
+  padding: 0.9rem 1.1rem 0.7rem;
+  border-bottom: 1px solid var(--stone3);
+}
+.flag-key-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+.flag-key {
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--fog);
+  background: var(--stone3);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--r-sm);
+  font-style: normal;
+}
+.flag-type-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.badge-light   { background: rgba(29,158,117,0.2);  color: var(--light-lt);   border: 1px solid rgba(29,158,117,0.4); }
+.badge-dark    { background: rgba(127,119,221,0.2); color: var(--dark-lt);    border: 1px solid rgba(127,119,221,0.4); }
+.badge-neutral { background: rgba(201,168,76,0.2);  color: var(--neutral-lt); border: 1px solid rgba(201,168,76,0.4); }
+.badge-gate    { background: rgba(176,58,46,0.2);   color: var(--danger-lt);  border: 1px solid rgba(176,58,46,0.4); }
+
+.flag-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--parch);
+  margin-bottom: 0.2rem;
+}
+.flag-desc { font-size: 0.83rem; color: var(--fog); font-style: italic; line-height: 1.4; }
+
+.flag-bottom { padding: 0.7rem 1.1rem 0.9rem; }
+
+.flag-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 0.3rem 0.6rem;
+  font-size: 0.82rem;
+  margin-bottom: 0.35rem;
+  align-items: start;
+}
+.flag-row:last-child { margin-bottom: 0; }
+.flag-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-dk);
+  padding-top: 2px;
+}
+.flag-value { color: var(--parch); line-height: 1.4; }
+.flag-value.unlocks { color: var(--light-lt); }
+.flag-value.blocks  { color: var(--danger-lt); }
+.flag-value.neutral-val { color: var(--neutral-lt); }
+
+/* tag inline */
+.itag {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+.itag-ep   { background: var(--stone3); color: var(--fog); }
+.itag-req  { background: rgba(29,158,117,0.15); color: var(--light-lt); }
+.itag-block{ background: rgba(176,58,46,0.15); color: var(--danger-lt); }
+
+/* ── FINAL CALC ── */
+.final-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 580px) { .final-grid { grid-template-columns: 1fr; } }
+
+.final-card {
+  border-radius: var(--r);
+  padding: 1.2rem 1.4rem;
+  border: 1px solid;
+}
+.final-light {
+  background: rgba(29,158,117,0.08);
+  border-color: var(--light);
+}
+.final-dark {
+  background: rgba(127,119,221,0.08);
+  border-color: var(--dark);
+}
+.final-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.final-light .final-name { color: var(--light-lt); }
+.final-dark  .final-name { color: var(--dark-lt); }
+.final-cond { font-size: 0.83rem; color: var(--fog); margin-bottom: 0.3rem; }
+.final-flags {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.6rem;
+}
+.fflag {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.fflag-need  { background: rgba(29,158,117,0.15); color: var(--light-lt); }
+.fflag-need::before  { content: '✓'; font-size: 0.7rem; }
+.fflag-block { background: rgba(176,58,46,0.15);  color: var(--danger-lt); }
+.fflag-block::before { content: '✗'; font-size: 0.7rem; }
+.fflag-any   { background: rgba(201,168,76,0.12); color: var(--neutral-lt); }
+.fflag-any::before   { content: '◆'; font-size: 0.55rem; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: var(--stone4);
+  font-size: 0.75rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.15em;
+  border-top: 1px solid var(--stone3);
+}
+
+/* ── SEARCH ── */
+.search-wrap { position: relative; margin-bottom: 1rem; }
+.search-wrap input {
+  width: 100%;
+  background: var(--stone2);
+  border: 1px solid var(--stone4);
+  border-radius: var(--r);
+  color: var(--parch);
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.95rem;
+  padding: 0.55rem 1rem 0.55rem 2.4rem;
+}
+.search-wrap input:focus { outline: 1px solid var(--gold-dk); }
+.search-wrap input::placeholder { color: var(--fog); font-style: italic; }
+.search-icon {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--fog);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.flag-card { animation: fadeIn 0.3s ease both; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Warcraft RPG de Texto — Documento de Design</p>
+  <h1>Mapa de Flags</h1>
+  <p class="subtitle">Conquistas, condições e consequências narrativas</p>
+</header>
+
+<div class="container">
+
+  <!-- COMO FUNCIONA -->
+  <p class="section-title">Como o sistema funciona</p>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">1</div>
+      <div>
+        <div class="how-title">Jogador faz uma escolha</div>
+        <div class="how-desc">Em certos episódios, a escolha do jogador tem peso narrativo real — não é só sabor de roleplay.</div>
+      </div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">2</div>
+      <div>
+        <div class="how-title">Flag é setada no banco</div>
+        <div class="how-desc">O backend insere a flag no JSONB <code style="font-size:0.8rem;color:var(--gold)">players.flags</code> e registra em <code style="font-size:0.8rem;color:var(--gold)">player_progress</code>.</div>
+      </div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">3</div>
+      <div>
+        <div class="how-title">Conquista exibida</div>
+        <div class="how-desc">O frontend recebe o achievement e exibe popup com título e descrição antes de avançar a cena.</div>
+      </div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">4</div>
+      <div>
+        <div class="how-title">Escolhas futuras filtradas</div>
+        <div class="how-desc">A API filtra as choices de cada cena pela flag <code style="font-size:0.8rem;color:var(--gold)">requires_flag</code> — certas opções só aparecem com as flags certas.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGENDA -->
+  <p class="section-title">Tipos de flag</p>
+  <div class="legend-row">
+    <span class="leg-pill leg-light">  <span class="dot dot-light"></span>  Luz — caminho da aliança</span>
+    <span class="leg-pill leg-dark">   <span class="dot dot-dark"></span>   Sombra — caminho de Arthas</span>
+    <span class="leg-pill leg-neutral"><span class="dot dot-neutral"></span> Neutro — moral / caráter</span>
+    <span class="leg-pill leg-gate">   <span class="dot dot-gate"></span>   Portão — determina final</span>
+  </div>
+
+  <!-- FILTROS + BUSCA -->
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Buscar por flag, conquista ou episódio…" oninput="applyFilters()">
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all"     onclick="setFilter('all',this)">Todas</button>
+    <button class="filter-btn"        data-filter="light"   onclick="setFilter('light',this)">Luz</button>
+    <button class="filter-btn"        data-filter="dark"    onclick="setFilter('dark',this)">Sombra</button>
+    <button class="filter-btn"        data-filter="neutral" onclick="setFilter('neutral',this)">Neutro</button>
+    <button class="filter-btn"        data-filter="gate"    onclick="setFilter('gate',this)">Portão</button>
+    <button class="filter-btn"        data-filter="act1"    onclick="setFilter('act1',this)">Ato 1</button>
+    <button class="filter-btn"        data-filter="act2"    onclick="setFilter('act2',this)">Ato 2</button>
+    <button class="filter-btn"        data-filter="act3"    onclick="setFilter('act3',this)">Ato 3</button>
+    <button class="filter-btn"        data-filter="act4"    onclick="setFilter('act4',this)">Ato 4</button>
+  </div>
+
+  <!-- ══ ATO 1 ══ -->
+  <div class="act-block" id="block-act1">
+    <div class="act-header">
+      <span class="act-badge act-1">Ato 1 — A praga chega ao reino</span>
+      <span class="act-desc">Flags de caráter e moral — definem quem o jogador é</span>
+    </div>
+    <div class="flags-grid">
+
+      <div class="flag-card type-neutral" data-type="neutral" data-act="act1" data-search="warned_villagers protetor do povo ep01 ep02 aldeia brill">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">warned_villagers</code>
+            <span class="flag-type-badge badge-neutral">Neutro</span>
+          </div>
+          <div class="flag-title">Protetor do Povo</div>
+          <div class="flag-desc">"Você escolheu avisar os aldeões antes da quarentena, mesmo contrariando as ordens."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP01/EP02</span> Ao avisar os aldeões do celeiro ou da aldeia infectada</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Opção de pedir ajuda de Uther no EP05 · Diálogo especial no Final A</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Conflita com</span>
+            <span class="flag-value blocks">enforced_quarantine — só uma das duas pode existir</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-neutral" data-type="neutral" data-act="act1" data-search="enforced_quarantine soldado da lei ep01 ep02 quarentena brill">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">enforced_quarantine</code>
+            <span class="flag-type-badge badge-neutral">Neutro</span>
+          </div>
+          <div class="flag-title">Soldado da Lei</div>
+          <div class="flag-desc">"Você cumpriu as ordens sem questionar. A lei acima da compaixão."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP02/EP03</span> Ao reportar ao prefeito e selar o celeiro sem avisar os aldeões</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Opção de executar a purga sem hesitar no EP05 · Fala extra de Arthas no EP04</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Conflita com</span>
+            <span class="flag-value blocks">warned_villagers</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-neutral" data-type="neutral" data-act="act1" data-search="investigated_kelthuzad detetive arcano ep03 kel'thuzad mago culto">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">investigated_kelthuzad</code>
+            <span class="flag-type-badge badge-neutral">Neutro</span>
+          </div>
+          <div class="flag-title">Detetive Arcano</div>
+          <div class="flag-desc">"Você investigou as pistas que apontavam para Kel'Thuzad antes de agir."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP03</span> Ao escolher investigar a origem do grão antes de seguir Arthas</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Cena de lore adicional no EP04 · Opção de confrontar Kel'Thuzad diretamente</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">opcional</span> Disponível independente de outras flags</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ ATO 2 ══ -->
+  <div class="act-block" id="block-act2">
+    <div class="act-header">
+      <span class="act-badge act-2">Ato 2 — O ponto sem retorno</span>
+      <span class="act-desc">A bifurcação central — define o caminho do jogador para o resto do jogo</span>
+    </div>
+    <div class="flags-grid">
+
+      <div class="flag-card type-light" data-type="light" data-act="act2" data-search="light_path fiel a alianca ep05 jaina stratholme purga">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">light_path</code>
+            <span class="flag-type-badge badge-light">Luz</span>
+          </div>
+          <div class="flag-title">Fiel à Aliança</div>
+          <div class="flag-desc">"Você ficou com Jaina. Algumas ordens não merecem obediência."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP05</span> Ao recusar a purga e partir com Jaina Proudmoore</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Todo o Ato 3A · Acesso às cenas de resistência · Opção de salvar Uther · Final A disponível</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Bloqueia</span>
+            <span class="flag-value blocks"><span class="itag itag-block">impede</span> dark_path · Ato 3B · Frostmourne · Final B</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">bônus</span> warned_villagers dá +1 opção de diálogo com Jaina</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-dark" data-type="dark" data-act="act2" data-search="dark_path lamina de arthas ep05 purga stratholme">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">dark_path</code>
+            <span class="flag-type-badge badge-dark">Sombra</span>
+          </div>
+          <div class="flag-title">Lâmina de Arthas</div>
+          <div class="flag-desc">"Você ficou. Purgar Stratholme foi necessário. Arthas reconheceu sua lealdade."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP05</span> Ao aceitar executar a purga ao lado de Arthas</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Todo o Ato 3B · Viagem a Northrend · Opção de tocar Frostmourne · Final B disponível</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Bloqueia</span>
+            <span class="flag-value blocks"><span class="itag itag-block">impede</span> light_path · Ato 3A · Opção de salvar Uther · Final A</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">bônus</span> enforced_quarantine dá fala adicional de Arthas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-neutral" data-type="neutral" data-act="act2" data-search="questioned_arthas voz da consciencia ep04 ep05 arthas questionar">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">questioned_arthas</code>
+            <span class="flag-type-badge badge-neutral">Neutro</span>
+          </div>
+          <div class="flag-title">Voz da Consciência</div>
+          <div class="flag-desc">"Você questionou Arthas publicamente antes de tomar sua decisão."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP04</span> Ao escolher confrontar Arthas verbalmente nos portões de Stratholme</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Diálogo especial no Ato 4 — Arthas reconhece o jogador · Monólogo extra no Final B</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Compatível com</span>
+            <span class="flag-value neutral-val">Funciona tanto no light_path quanto no dark_path</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ ATO 3 ══ -->
+  <div class="act-block" id="block-act3">
+    <div class="act-header">
+      <span class="act-badge act-3">Ato 3 — Dois caminhos</span>
+      <span class="act-desc">Flags exclusivas por caminho — Luz (3A) ou Sombra (3B)</span>
+    </div>
+    <div class="flags-grid">
+
+      <!-- 3A -->
+      <div class="flag-card type-light" data-type="light" data-act="act3" data-search="uther_defended gratidao do paladino ep08a uther salvar luz">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">uther_defended</code>
+            <span class="flag-type-badge badge-light">Luz · 3A</span>
+          </div>
+          <div class="flag-title">Gratidão do Paladino</div>
+          <div class="flag-desc">"Você tentou proteger Uther mesmo sabendo que Arthas era mais forte."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP08A</span> Ao interpor-se entre Arthas e Uther</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">exige</span> light_path ativo</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Epílogo especial no Final A · Menção de Uther no discurso final</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-light" data-type="light" data-act="act3" data-search="jaina_trusted aliada da maga ep07a jaina confianca luz">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">jaina_trusted</code>
+            <span class="flag-type-badge badge-light">Luz · 3A</span>
+          </div>
+          <div class="flag-title">Aliada da Maga</div>
+          <div class="flag-desc">"Você seguiu o plano de Jaina sem hesitar, ganhando sua confiança total."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP07A</span> Ao aceitar o plano de Jaina para a resistência</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">exige</span> light_path ativo</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Jaina aparece no Final A · Diálogo extra no EP09</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3B -->
+      <div class="flag-card type-dark" data-type="dark" data-act="act3" data-search="frostmourne_touched corrompido ep08b frostmourne northrend espada">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">frostmourne_touched</code>
+            <span class="flag-type-badge badge-dark">Sombra · 3B</span>
+          </div>
+          <div class="flag-title">Corrompido</div>
+          <div class="flag-desc">"Você tocou Frostmourne. O frio da espada entrou em você — e algo foi embora."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP08B</span> Ao tocar a espada amaldiçoada na caverna de Northrend</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">exige</span> dark_path ativo</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Final B desbloqueado · Narração alterada no EP09 e EP10 · Poder extra no Ato 4</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-dark" data-type="dark" data-act="act3" data-search="northrend_survived sobrevivente do gelo ep07b northrend expedição">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">northrend_survived</code>
+            <span class="flag-type-badge badge-dark">Sombra · 3B</span>
+          </div>
+          <div class="flag-title">Sobrevivente do Gelo</div>
+          <div class="flag-desc">"Você atravessou Northrend. Poucos conseguem dizer o mesmo."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP07B</span> Ao completar a travessia de Northrend com Arthas</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">exige</span> dark_path ativo</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Descrição narrativa alterada no EP09 · Arthas menciona o jogador no EP10</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══ ATO 4 ══ -->
+  <div class="act-block" id="block-act4">
+    <div class="act-header">
+      <span class="act-badge act-4">Ato 4 — A queda do rei</span>
+      <span class="act-desc">Flags de portão — determinam qual final é apresentado</span>
+    </div>
+    <div class="flags-grid">
+
+      <div class="flag-card type-gate" data-type="gate" data-act="act4" data-search="witnessed_regicide testemunha do regicidio ep10 terenas trono final">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">witnessed_regicide</code>
+            <span class="flag-type-badge badge-gate">Portão</span>
+          </div>
+          <div class="flag-title">Testemunha do Regicídio</div>
+          <div class="flag-desc">"Você estava lá quando Arthas matou o rei Terenas. Isso não pode ser desfeito."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP10</span> Automaticamente — todos os jogadores chegam a este ponto</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Cena de escolha final · EP11 disponível para ambos os caminhos</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Observação</span>
+            <span class="flag-value neutral-val">Única flag garantida para 100% dos jogadores</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-gate" data-type="gate" data-act="act4" data-search="chose_resistance escolheu resistir ep11 final a escolha final">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">chose_resistance</code>
+            <span class="flag-type-badge badge-gate">Portão · Final A</span>
+          </div>
+          <div class="flag-title">Escolheu Resistir</div>
+          <div class="flag-desc">"No momento final, você se recusou a servir a escuridão."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP11</span> Ao escolher resistir a Arthas na cena de escolha final</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">exige</span> light_path — sem ele esta opção não aparece no EP11</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Final A — "A chama resiste"</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flag-card type-gate" data-type="gate" data-act="act4" data-search="chose_darkness escolheu as trevas ep11 final b undead cavaleiro">
+        <div class="flag-top">
+          <div class="flag-key-row">
+            <code class="flag-key">chose_darkness</code>
+            <span class="flag-type-badge badge-gate">Portão · Final B</span>
+          </div>
+          <div class="flag-title">Escolheu as Trevas</div>
+          <div class="flag-desc">"Você inclinou a cabeça diante do novo rei. Lordaeron é sua tumba agora."</div>
+        </div>
+        <div class="flag-bottom">
+          <div class="flag-row">
+            <span class="flag-label">Setada em</span>
+            <span class="flag-value"><span class="itag itag-ep">EP11</span> Ao ajoelhar-se diante de Arthas na cena de escolha final</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Requer</span>
+            <span class="flag-value"><span class="itag itag-req">exige</span> dark_path + frostmourne_touched para opção aparecer</span>
+          </div>
+          <div class="flag-row">
+            <span class="flag-label">Desbloqueia</span>
+            <span class="flag-value unlocks">Final B — "O reino cai"</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CÁLCULO DOS FINAIS -->
+  <p class="section-title">Cálculo dos finais</p>
+  <div class="final-grid">
+
+    <div class="final-card final-light">
+      <div class="final-name">Final A — A chama resiste</div>
+      <div class="final-cond">Todas as condições abaixo devem ser verdadeiras:</div>
+      <div class="final-flags">
+        <span class="fflag fflag-need">light_path = true</span>
+        <span class="fflag fflag-need">chose_resistance = true</span>
+        <span class="fflag fflag-any">warned_villagers (bônus — epílogo estendido)</span>
+        <span class="fflag fflag-any">uther_defended (bônus — menção de Uther no final)</span>
+        <span class="fflag fflag-any">jaina_trusted (bônus — Jaina aparece na cena final)</span>
+        <span class="fflag fflag-block">dark_path = false obrigatório</span>
+        <span class="fflag fflag-block">frostmourne_touched = false obrigatório</span>
+      </div>
+    </div>
+
+    <div class="final-card final-dark">
+      <div class="final-name">Final B — O reino cai</div>
+      <div class="final-cond">Todas as condições abaixo devem ser verdadeiras:</div>
+      <div class="final-flags">
+        <span class="fflag fflag-need">dark_path = true</span>
+        <span class="fflag fflag-need">frostmourne_touched = true</span>
+        <span class="fflag fflag-need">chose_darkness = true</span>
+        <span class="fflag fflag-any">enforced_quarantine (bônus — narração alterada)</span>
+        <span class="fflag fflag-any">northrend_survived (bônus — Arthas menciona o jogador)</span>
+        <span class="fflag fflag-any">questioned_arthas (bônus — monólogo extra de Arthas)</span>
+        <span class="fflag fflag-block">light_path = false obrigatório</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RESUMO SQL -->
+  <p class="section-title">Referência rápida para o seed.sql</p>
+  <div style="background:var(--stone2);border:1px solid var(--stone4);border-radius:var(--r);padding:1.2rem 1.4rem;overflow-x:auto;">
+    <pre style="font-family:'Courier New',monospace;font-size:0.78rem;color:var(--fog);line-height:1.8;white-space:pre;"><span style="color:var(--gold-dk)">-- achievements a inserir no 002_seed_scenes.sql</span>
+<span style="color:var(--parch)">INSERT INTO achievements (flag_key, title, act) VALUES</span>
+  <span style="color:var(--light-lt)">('warned_villagers',      'Protetor do Povo',         1),</span>
+  <span style="color:var(--fog)">  ('enforced_quarantine',   'Soldado da Lei',            1),</span>
+  <span style="color:var(--fog)">  ('investigated_kelthuzad','Detetive Arcano',           1),</span>
+  <span style="color:var(--light-lt)">('light_path',            'Fiel à Aliança',            2),</span>
+  <span style="color:var(--dark-lt)">('dark_path',             'Lâmina de Arthas',          2),</span>
+  <span style="color:var(--fog)">  ('questioned_arthas',     'Voz da Consciência',        2),</span>
+  <span style="color:var(--light-lt)">('uther_defended',        'Gratidão do Paladino',      3),</span>
+  <span style="color:var(--light-lt)">('jaina_trusted',         'Aliada da Maga',            3),</span>
+  <span style="color:var(--dark-lt)">('frostmourne_touched',   'Corrompido',                3),</span>
+  <span style="color:var(--dark-lt)">('northrend_survived',    'Sobrevivente do Gelo',      3),</span>
+  <span style="color:var(--danger-lt)">('witnessed_regicide',   'Testemunha do Regicídio',   4),</span>
+  <span style="color:var(--danger-lt)">('chose_resistance',     'Escolheu Resistir',         4),</span>
+  <span style="color:var(--danger-lt)">('chose_darkness',       'Escolheu as Trevas',        4);</span></pre>
+  </div>
+
+</div>
+
+<footer>Warcraft: O Caminho do Herói — Documento interno de design · UNIVATES</footer>
+
+<script>
+let currentFilter = 'all';
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('.flag-card').forEach(card => {
+    const type = card.dataset.type;
+    const act  = card.dataset.act;
+    const searchText = card.dataset.search + ' ' + card.textContent.toLowerCase();
+
+    const typeOk = currentFilter === 'all' || currentFilter === type || currentFilter === act;
+    const searchOk = !q || searchText.includes(q);
+
+    card.classList.toggle('hidden-flag', !(typeOk && searchOk));
+  });
+}
+</script>
+</body>
+</html>

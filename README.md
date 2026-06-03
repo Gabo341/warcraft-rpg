@@ -1,2 +1,2 @@
 # warcraft-rpg
-RPG de texto inspirado no Warcraft — Angular + Node.js + Sql
+RPG de texto inspirado no Warcraft — Angular + Node.js + SQL

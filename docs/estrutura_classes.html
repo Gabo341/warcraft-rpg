@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warcraft RPG — Estrutura de Classes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold:    #C9A84C;
+    --gold-lt: #E8C97A;
+    --gold-dk: #7A5C1E;
+    --stone:   #1A1814;
+    --stone2:  #22201C;
+    --stone3:  #2E2B24;
+    --stone4:  #3D3930;
+    --fog:     #8C8070;
+    --parch:   #EDE4CC;
+
+    --warrior: #B03A2E;
+    --paladin: #D4AC0D;
+    --archer:  #1E8449;
+    --mage:    #1A5276;
+    --rogue:   #6C3483;
+
+    --warrior-lt: #F1948A;
+    --paladin-lt: #F9E79F;
+    --archer-lt:  #82E0AA;
+    --mage-lt:    #85C1E9;
+    --rogue-lt:   #C39BD3;
+
+    --r: 12px;
+    --r-sm: 6px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--stone);
+    color: var(--parch);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.6;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, #2a1f0a 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.04) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.04) 40px);
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 3rem 1rem 2rem;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1.5rem auto 0;
+  }
+  .title-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    color: var(--gold-lt);
+    font-weight: 700;
+    text-shadow: 0 0 40px rgba(201,168,76,0.3);
+    line-height: 1.2;
+  }
+  .subtitle {
+    color: var(--fog);
+    font-style: italic;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+  }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+  /* ── SECTION HEADERS ── */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin: 2.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-title::before, .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dk));
+  }
+  .section-title::after { background: linear-gradient(90deg, var(--gold-dk), transparent); }
+
+  /* ── RACE RULES ── */
+  .race-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .race-card {
+    background: var(--stone2);
+    border: 1px solid var(--stone4);
+    border-radius: var(--r);
+    padding: 1.2rem 1.4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .race-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .race-card.human::before  { background: linear-gradient(90deg, var(--paladin), var(--mage)); }
+  .race-card.dwarf::before  { background: linear-gradient(90deg, var(--warrior), var(--paladin)); }
+  .race-card.drow::before   { background: linear-gradient(90deg, var(--rogue), var(--archer)); }
+
+  .race-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold-lt);
+    margin-bottom: 0.4rem;
+  }
+  .race-restriction {
+    font-size: 0.88rem;
+    color: var(--fog);
+    font-style: italic;
+  }
+  .race-allowed {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.7rem;
+  }
+  .class-pill {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid;
+    text-transform: uppercase;
+  }
+  .pill-warrior { color: var(--warrior-lt); border-color: var(--warrior); background: rgba(176,58,46,0.15); }
+  .pill-paladin { color: var(--paladin-lt); border-color: var(--paladin); background: rgba(212,172,13,0.15); }
+  .pill-archer  { color: var(--archer-lt);  border-color: var(--archer);  background: rgba(30,132,73,0.15); }
+  .pill-mage    { color: var(--mage-lt);    border-color: var(--mage);    background: rgba(26,82,118,0.15); }
+  .pill-rogue   { color: var(--rogue-lt);   border-color: var(--rogue);   background: rgba(108,52,131,0.15); }
+
+  /* ── D20 MECHANIC BOX ── */
+  .d20-box {
+    background: var(--stone2);
+    border: 1px solid var(--gold-dk);
+    border-radius: var(--r);
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.2rem;
+    align-items: start;
+  }
+  .d20-icon {
+    width: 56px; height: 56px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .d20-icon svg { width: 100%; height: 100%; }
+  .d20-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--gold-lt);
+    margin-bottom: 0.5rem;
+  }
+  .d20-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-top: 0.8rem;
+  }
+  .d20-table th {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    padding: 0.4rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--stone4);
+  }
+  .d20-table td {
+    padding: 0.35rem 0.8rem;
+    color: var(--fog);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+  }
+  .d20-table td:first-child {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: var(--gold-lt);
+    white-space: nowrap;
+  }
+  .roll-nat20 { color: #F9E79F !important; font-weight: 600; }
+  .roll-fail  { color: #E74C3C !important; }
+
+  /* ── CLASS CARDS ── */
+  .classes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .class-card {
+    background: var(--stone2);
+    border-radius: var(--r);
+    overflow: hidden;
+    border: 1px solid var(--stone4);
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .class-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+
+  /* Color accent per class */
+  .class-card.warrior { --accent: var(--warrior); --accent-lt: var(--warrior-lt); }
+  .class-card.paladin { --accent: var(--paladin); --accent-lt: var(--paladin-lt); }
+  .class-card.archer  { --accent: var(--archer);  --accent-lt: var(--archer-lt); }
+  .class-card.mage    { --accent: var(--mage);    --accent-lt: var(--mage-lt); }
+  .class-card.rogue   { --accent: var(--rogue);   --accent-lt: var(--rogue-lt); }
+
+  .class-card:hover { border-color: var(--accent); }
+
+  .class-header {
+    padding: 1.4rem 1.6rem 1rem;
+    border-bottom: 1px solid var(--stone4);
+    position: relative;
+  }
+  .class-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+  }
+
+  .class-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.15rem;
+    color: var(--accent-lt);
+    margin-bottom: 0.2rem;
+  }
+  .class-races {
+    font-size: 0.8rem;
+    color: var(--fog);
+    font-style: italic;
+  }
+  .class-flavor {
+    font-size: 0.9rem;
+    color: var(--fog);
+    margin-top: 0.6rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ── POWERS ── */
+  .powers-list { padding: 0.8rem 0; }
+
+  .act-block { padding: 0.6rem 1.6rem 0.8rem; }
+  .act-block + .act-block { border-top: 1px solid var(--stone3); }
+
+  .act-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    opacity: 0.9;
+  }
+
+  .power-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    align-items: start;
+    margin-bottom: 0.7rem;
+  }
+  .power-row:last-child { margin-bottom: 0; }
+
+  .power-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    color: var(--parch);
+    margin-bottom: 0.15rem;
+  }
+  .power-desc {
+    font-size: 0.83rem;
+    color: var(--fog);
+    line-height: 1.45;
+  }
+
+  .power-dice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .dice-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--r-sm);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--accent);
+    color: var(--accent-lt);
+    white-space: nowrap;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .dice-note {
+    font-size: 0.65rem;
+    color: var(--fog);
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* ── D20 ROLLER WIDGET ── */
+  .roller-section { margin: 2rem 0; }
+  .roller-card {
+    background: var(--stone2);
+    border: 1px solid var(--gold-dk);
+    border-radius: var(--r);
+    padding: 1.5rem 1.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .roller-left { flex: 1; min-width: 200px; }
+  .roller-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .roller-selects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .roller-selects select {
+    background: var(--stone3);
+    border: 1px solid var(--stone4);
+    border-radius: var(--r-sm);
+    color: var(--parch);
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.7rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .roller-selects select:focus { outline: 1px solid var(--gold-dk); }
+
+  .roll-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--gold-dk), var(--gold));
+    color: var(--stone);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .roll-btn:hover { opacity: 0.9; }
+  .roll-btn:active { transform: scale(0.97); }
+
+  .roller-right { text-align: center; min-width: 140px; }
+  .d20-display {
+    width: 90px; height: 90px;
+    margin: 0 auto 0.6rem;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .d20-display:active { transform: scale(0.9); }
+  .d20-display svg { width: 100%; height: 100%; }
+
+  .roll-result {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.2rem;
+    color: var(--gold-lt);
+    line-height: 1;
+    min-height: 2.8rem;
+    transition: color 0.3s;
+  }
+  .roll-result.nat20 { color: #F9E79F; text-shadow: 0 0 20px rgba(249,231,159,0.6); }
+  .roll-result.fumble { color: #E74C3C; }
+
+  .roll-verdict {
+    font-size: 0.82rem;
+    color: var(--fog);
+    margin-top: 0.3rem;
+    font-style: italic;
+    min-height: 1.2rem;
+  }
+  .roll-damage {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    margin-top: 0.4rem;
+    min-height: 1.3rem;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    margin-top: 2.5rem;
+    background: var(--stone2);
+    border: 1px solid var(--stone4);
+    border-radius: var(--r);
+    padding: 1.2rem 1.6rem;
+  }
+  .legend-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.5rem 1.5rem;
+    font-size: 0.85rem;
+    color: var(--fog);
+  }
+  .legend-item strong {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    color: var(--parch);
+  }
+
+  /* ── ROLLING ANIMATION ── */
+  @keyframes roll-spin {
+    0%   { transform: rotate(0deg)   scale(1); }
+    30%  { transform: rotate(180deg) scale(1.15); }
+    70%  { transform: rotate(340deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+  .rolling { animation: roll-spin 0.45s ease-out; }
+
+  @keyframes result-pop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    70%  { transform: scale(1.1); }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+  .result-pop { animation: result-pop 0.3s ease-out; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--stone4);
+    font-size: 0.8rem;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.15em;
+    border-top: 1px solid var(--stone3);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="title-eyebrow">Warcraft RPG de Texto — Documento de Design</p>
+  <h1>Estrutura de Classes</h1>
+  <p class="subtitle">Poderes, progressão e mecânicas de rolagem</p>
+</header>
+
+<div class="container">
+
+  <!-- ══ RAÇAS E RESTRIÇÕES ══ -->
+  <p class="section-title">Raças e restrições</p>
+  <div class="race-grid">
+
+    <div class="race-card human">
+      <div class="race-name">Humano</div>
+      <div class="race-restriction">Versáteis — acesso à maioria das classes</div>
+      <div class="race-allowed">
+        <span class="class-pill pill-warrior">Guerreiro</span>
+        <span class="class-pill pill-paladin">Paladino</span>
+        <span class="class-pill pill-mage">Mago</span>
+      </div>
+    </div>
+
+    <div class="race-card dwarf">
+      <div class="race-name">Anão</div>
+      <div class="race-restriction">Resistentes — classes de linha de frente</div>
+      <div class="race-allowed">
+        <span class="class-pill pill-warrior">Guerreiro</span>
+        <span class="class-pill pill-paladin">Paladino</span>
+      </div>
+    </div>
+
+    <div class="race-card drow">
+      <div class="race-name">Drow</div>
+      <div class="race-restriction">Furtivos — classes de sombra e precisão</div>
+      <div class="race-allowed">
+        <span class="class-pill pill-rogue">Ladino</span>
+        <span class="class-pill pill-archer">Arqueiro</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ MECÂNICA D20 ══ -->
+  <p class="section-title">Mecânica de rolagem — d20</p>
+
+  <div class="d20-box">
+    <div class="d20-icon">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,5 95,30 95,70 50,95 5,70 5,30" fill="#22201C" stroke="#C9A84C" stroke-width="2"/>
+        <polygon points="50,5 95,30 50,42" fill="rgba(201,168,76,0.08)" stroke="#7A5C1E" stroke-width="1"/>
+        <polygon points="50,5 5,30 50,42" fill="rgba(201,168,76,0.05)" stroke="#7A5C1E" stroke-width="1"/>
+        <polygon points="95,30 95,70 50,58 50,42" fill="rgba(201,168,76,0.06)" stroke="#7A5C1E" stroke-width="1"/>
+        <polygon points="5,30 5,70 50,58 50,42" fill="rgba(201,168,76,0.04)" stroke="#7A5C1E" stroke-width="1"/>
+        <polygon points="50,95 95,70 50,58" fill="rgba(201,168,76,0.07)" stroke="#7A5C1E" stroke-width="1"/>
+        <polygon points="50,95 5,70 50,58" fill="rgba(201,168,76,0.05)" stroke="#7A5C1E" stroke-width="1"/>
+        <text x="50" y="56" text-anchor="middle" font-family="Cinzel Decorative, serif" font-size="18" fill="#C9A84C" font-weight="700">20</text>
+      </svg>
+    </div>
+    <div>
+      <div class="d20-title">Como o d20 funciona no jogo</div>
+      <p style="font-size:0.9rem; color:var(--fog); margin-bottom:0.8rem;">
+        Toda habilidade ativa é resolvida com uma rolagem de d20 antes de aplicar o dano base. O resultado do dado modifica o efeito final — acertos críticos potencializam o poder, falhas críticas podem gerar efeitos negativos. O dano base de cada habilidade é somado ao modificador de rolagem.
+      </p>
+      <table class="d20-table">
+        <thead>
+          <tr>
+            <th>Resultado</th>
+            <th>Classificação</th>
+            <th>Efeito no dano / ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="roll-nat20">20 (Nat 20)</td><td class="roll-nat20">Crítico!</td><td class="roll-nat20">Dano × 2 + efeito especial da habilidade</td></tr>
+          <tr><td>15 – 19</td><td>Acerto forte</td><td>Dano base + bônus de +50%</td></tr>
+          <tr><td>10 – 14</td><td>Acerto</td><td>Dano base normal</td></tr>
+          <tr><td>5 – 9</td><td>Acerto fraco</td><td>Dano base − 25%</td></tr>
+          <tr><td class="roll-fail">1 (Fumble)</td><td class="roll-fail">Falha crítica</td><td class="roll-fail">Habilidade falha + efeito colateral</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ ROLADOR INTERATIVO ══ -->
+  <div class="roller-section">
+    <div class="roller-card">
+      <div class="roller-left">
+        <div class="roller-title">Simulador de rolagem</div>
+        <div class="roller-selects">
+          <select id="sel-class">
+            <option value="">Selecionar classe</option>
+            <option value="warrior">Guerreiro</option>
+            <option value="paladin">Paladino</option>
+            <option value="archer">Arqueiro</option>
+            <option value="mage">Mago</option>
+            <option value="rogue">Ladino</option>
+          </select>
+          <select id="sel-act">
+            <option value="1">Ato 1</option>
+            <option value="2">Ato 2</option>
+            <option value="3">Ato 3</option>
+          </select>
+          <select id="sel-power">
+            <option value="">Selecionar poder</option>
+          </select>
+        </div>
+        <button class="roll-btn" onclick="doRoll()">⚔ Rolar d20</button>
+      </div>
+      <div class="roller-right">
+        <div class="d20-display" id="d20-display" onclick="doRoll()">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" id="d20-svg">
+            <polygon points="50,5 95,30 95,70 50,95 5,70 5,30" fill="#22201C" stroke="#C9A84C" stroke-width="2.5"/>
+            <polygon points="50,5 95,30 50,42" fill="rgba(201,168,76,0.08)" stroke="#7A5C1E" stroke-width="1"/>
+            <polygon points="50,5 5,30 50,42" fill="rgba(201,168,76,0.05)" stroke="#7A5C1E" stroke-width="1"/>
+            <polygon points="95,30 95,70 50,58 50,42" fill="rgba(201,168,76,0.06)" stroke="#7A5C1E" stroke-width="1"/>
+            <polygon points="5,30 5,70 50,58 50,42" fill="rgba(201,168,76,0.04)" stroke="#7A5C1E" stroke-width="1"/>
+            <polygon points="50,95 95,70 50,58" fill="rgba(201,168,76,0.07)" stroke="#7A5C1E" stroke-width="1"/>
+            <polygon points="50,95 5,70 50,58" fill="rgba(201,168,76,0.05)" stroke="#7A5C1E" stroke-width="1"/>
+            <text id="d20-num" x="50" y="56" text-anchor="middle" font-family="Cinzel Decorative, serif" font-size="22" fill="#C9A84C" font-weight="700">?</text>
+          </svg>
+        </div>
+        <div class="roll-result" id="roll-result">—</div>
+        <div class="roll-verdict" id="roll-verdict"></div>
+        <div class="roll-damage" id="roll-damage"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CLASSES ══ -->
+  <p class="section-title">Classes e poderes</p>
+  <div class="classes-grid">
+
+    <!-- GUERREIRO -->
+    <div class="class-card warrior">
+      <div class="class-header">
+        <div class="class-name">Guerreiro</div>
+        <div class="class-races">Humano · Anão</div>
+        <div class="class-flavor">Linha de frente implacável. Cada golpe é uma declaração de força bruta e domínio físico.</div>
+      </div>
+      <div class="powers-list">
+
+        <div class="act-block">
+          <div class="act-label">Ato 1 — Desbloqueado ao iniciar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Atacar</div>
+              <div class="power-desc">Golpe direto com a arma. Base confiável do combate físico.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 3<br>4–8 dano</span>
+              <span class="dice-note">força</span>
+            </div>
+          </div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Ataque Transversal</div>
+              <div class="power-desc">Arco horizontal que atinge até 2 alvos adjacentes simultaneamente.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 2<br>3–6 dano</span>
+              <span class="dice-note">por alvo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 2 — Desbloqueado ao avançar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Derrubar + Atacar</div>
+              <div class="power-desc">Derruba o inimigo (d20 vs resistência) e desfere golpe imediato enquanto está no chão. Fumble: cai você mesmo.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 4<br>6–10 dano</span>
+              <span class="dice-note">+ derrubado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 3 — Poder lendário</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Furacão de Lâminas</div>
+              <div class="power-desc">Redemoinho selvagem que atinge todos os inimigos ao redor. Nat 20: sangramento contínuo por 2 rodadas.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 5<br>8–14 dano</span>
+              <span class="dice-note">área total</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PALADINO -->
+    <div class="class-card paladin">
+      <div class="class-header">
+        <div class="class-name">Paladino</div>
+        <div class="class-races">Humano · Anão</div>
+        <div class="class-flavor">Campeão da Luz. Equilibra espada e fé — capaz de curar aliados e destruir o profano com igual maestria.</div>
+      </div>
+      <div class="powers-list">
+
+        <div class="act-block">
+          <div class="act-label">Ato 1 — Desbloqueado ao iniciar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Atacar</div>
+              <div class="power-desc">Golpe sagrado imbuído de Luz. Causa dano extra contra mortos-vivos.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 2<br>3–7 dano</span>
+              <span class="dice-note">+2 vs undead</span>
+            </div>
+          </div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Curar</div>
+              <div class="power-desc">Canaliza a Luz para restaurar vitalidade de aliado. Nat 20: cura total. Fumble: cura o inimigo mais próximo.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 1<br>4–8 HP</span>
+              <span class="dice-note">restaurados</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 2 — Desbloqueado ao avançar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Destruição Divina</div>
+              <div class="power-desc">Explosão de energia sagrada que atinge um alvo. Nat 20: o alvo fica cego por 1 rodada.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 4<br>7–12 dano</span>
+              <span class="dice-note">sagrado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 3 — Poder lendário</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Ressuscitar Aliado</div>
+              <div class="power-desc">Traz um aliado de volta com 50% do HP. Requer d20 ≥ 10. Fumble (1): o paladino perde 8 HP no processo.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 ≥ 10<br>50% HP</span>
+              <span class="dice-note">do aliado</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ARQUEIRO -->
+    <div class="class-card archer">
+      <div class="class-header">
+        <div class="class-name">Arqueiro / Caçador</div>
+        <div class="class-races">Drow</div>
+        <div class="class-flavor">Precisão absoluta à distância. Evolui de atirador solitário para mestre da caça com companheiro animal.</div>
+      </div>
+      <div class="powers-list">
+
+        <div class="act-block">
+          <div class="act-label">Ato 1 — Desbloqueado ao iniciar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Atacar</div>
+              <div class="power-desc">Flecha simples de longo alcance. Nunca erra à queima-roupa.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 2<br>3–6 dano</span>
+              <span class="dice-note">precisão</span>
+            </div>
+          </div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Flecha Dupla</div>
+              <div class="power-desc">Dispara dois projéteis no mesmo instante. Cada flecha rola separado. Nat 20 em qualquer uma: perfura dois alvos.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">2× d20 + 1<br>2–5 dano</span>
+              <span class="dice-note">cada flecha</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 2 — Desbloqueado ao avançar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Ataque Duplo</div>
+              <div class="power-desc">Duas ações de ataque no mesmo turno. Segunda ação tem −2 no d20. Fumble na segunda: flecha desviada atinge aliado.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">2× d20<br>3–6 dano</span>
+              <span class="dice-note">−2 na 2ª</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 3 — Poder lendário</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Companheiro Animal</div>
+              <div class="power-desc">Invoca um lobo ou corvo que ataca junto. O companheiro rola seu próprio d20. Nat 20: imobiliza o alvo por 1 turno.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + d20<br>arqueiro + pet</span>
+              <span class="dice-note">4–7 pet</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAGO -->
+    <div class="class-card mage">
+      <div class="class-header">
+        <div class="class-name">Mago</div>
+        <div class="class-races">Humano</div>
+        <div class="class-flavor">Domínio arcano de fogo e gelo. Alto dano, alto risco — as magias mais poderosas do jogo, com os efeitos de fumble mais perigosos.</div>
+      </div>
+      <div class="powers-list">
+
+        <div class="act-block">
+          <div class="act-label">Ato 1 — Desbloqueado ao iniciar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Raio de Fogo</div>
+              <div class="power-desc">Projétil concentrado de chamas. Rápido, direto. Fumble: queima a própria mão (3 dano ao mago).</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 3<br>5–9 dano</span>
+              <span class="dice-note">fogo</span>
+            </div>
+          </div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Bola de Fogo</div>
+              <div class="power-desc">Explosão em área que atinge todos no raio. Nat 20: incendiado por 2 rodadas. Fumble: explosão prematura, atinge aliados.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 2<br>6–11 dano</span>
+              <span class="dice-note">área</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 2 — Desbloqueado ao avançar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Congelar</div>
+              <div class="power-desc">Lança cristais de gelo que imobilizam o alvo. Nat 20: congelado por 2 turnos. Fumble: o feitiço reverte, mago fica lento.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 3<br>4–8 dano</span>
+              <span class="dice-note">+ imobiliza</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 3 — Poder lendário</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Teletransporte</div>
+              <div class="power-desc">Escapa de qualquer situação ou reposiciona instantaneamente. Requer d20 ≥ 8. Fumble (1): teletransporta para lugar errado — próximo turno perdido.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 ≥ 8<br>sem dano</span>
+              <span class="dice-note">utilidade</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LADINO -->
+    <div class="class-card rogue">
+      <div class="class-header">
+        <div class="class-name">Ladino</div>
+        <div class="class-races">Drow</div>
+        <div class="class-flavor">Sombra e veneno. Opera nas frestas da percepção alheia — invisível, letal, imprevisível.</div>
+      </div>
+      <div class="powers-list">
+
+        <div class="act-block">
+          <div class="act-label">Ato 1 — Desbloqueado ao iniciar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Atacar</div>
+              <div class="power-desc">Golpe rápido de adaga. Bônus se o alvo não percebeu o ladino nesse turno.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 2<br>3–6 dano</span>
+              <span class="dice-note">+3 furtivo</span>
+            </div>
+          </div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Envenenar Adaga</div>
+              <div class="power-desc">Aplica veneno na lâmina. Próximo ataque causa dano extra por 2 rodadas. Fumble: envenena a si mesmo.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 1<br>2–4 dano</span>
+              <span class="dice-note">× 2 rodadas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 2 — Desbloqueado ao avançar</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Invisibilidade</div>
+              <div class="power-desc">Desaparece por 1 turno. Próximo ataque é automático acerto forte (sem rolar). Fumble: some do lugar errado, perde o turno.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 ≥ 6<br>garantido</span>
+              <span class="dice-note">próx. ataque</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="act-block">
+          <div class="act-label">Ato 3 — Poder lendário</div>
+          <div class="power-row">
+            <div>
+              <div class="power-name">Chuva de Lâminas</div>
+              <div class="power-desc">Lança adagas em todas as direções atingindo toda a área. Nat 20: cada inimigo perde o próximo turno. Fumble: aliados também são atingidos.</div>
+            </div>
+            <div class="power-dice">
+              <span class="dice-badge">d20 + 4<br>5–9 dano</span>
+              <span class="dice-note">área total</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /classes-grid -->
+
+  <!-- ══ LEGENDA ══ -->
+  <div class="legend">
+    <div class="legend-title">Legenda de rolagem</div>
+    <div class="legend-grid">
+      <div class="legend-item"><strong>d20 + N</strong> — rola 1–20, soma modificador de classe</div>
+      <div class="legend-item"><strong>2× d20</strong> — dois dados separados (Flecha Dupla, Ataque Duplo)</div>
+      <div class="legend-item"><strong>Nat 20</strong> — resultado exato 20 antes do modificador</div>
+      <div class="legend-item"><strong>Fumble (1)</strong> — resultado exato 1 antes do modificador</div>
+      <div class="legend-item"><strong>d20 ≥ N</strong> — habilidade de utilidade: precisa atingir mínimo</div>
+      <div class="legend-item"><strong>Dano base</strong> — intervalo padrão sem crítico nem fraco</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<footer>Warcraft: O Caminho do Herói — Documento interno de design · UNIVATES</footer>
+
+<script>
+const POWERS = {
+  warrior: {
+    1: [
+      { name: 'Atacar',            mod: 3, dmgMin: 4, dmgMax: 8 },
+      { name: 'Ataque Transversal',mod: 2, dmgMin: 3, dmgMax: 6 },
+    ],
+    2: [{ name: 'Derrubar + Atacar', mod: 4, dmgMin: 6, dmgMax: 10 }],
+    3: [{ name: 'Furacão de Lâminas', mod: 5, dmgMin: 8, dmgMax: 14 }],
+  },
+  paladin: {
+    1: [
+      { name: 'Atacar', mod: 2, dmgMin: 3, dmgMax: 7 },
+      { name: 'Curar',  mod: 1, dmgMin: 4, dmgMax: 8, heal: true },
+    ],
+    2: [{ name: 'Destruição Divina', mod: 4, dmgMin: 7, dmgMax: 12 }],
+    3: [{ name: 'Ressuscitar Aliado', mod: 0, dmgMin: 0, dmgMax: 0, special: 'Requer d20 ≥ 10' }],
+  },
+  archer: {
+    1: [
+      { name: 'Atacar',       mod: 2, dmgMin: 3, dmgMax: 6 },
+      { name: 'Flecha Dupla', mod: 1, dmgMin: 4, dmgMax: 10, double: true },
+    ],
+    2: [{ name: 'Ataque Duplo', mod: 0, dmgMin: 6, dmgMax: 12, double: true }],
+    3: [{ name: 'Companheiro Animal', mod: 3, dmgMin: 7, dmgMax: 13, pet: true }],
+  },
+  mage: {
+    1: [
+      { name: 'Raio de Fogo', mod: 3, dmgMin: 5, dmgMax: 9 },
+      { name: 'Bola de Fogo', mod: 2, dmgMin: 6, dmgMax: 11 },
+    ],
+    2: [{ name: 'Congelar', mod: 3, dmgMin: 4, dmgMax: 8 }],
+    3: [{ name: 'Teletransporte', mod: 0, dmgMin: 0, dmgMax: 0, special: 'Requer d20 ≥ 8' }],
+  },
+  rogue: {
+    1: [
+      { name: 'Atacar',           mod: 2, dmgMin: 3, dmgMax: 6 },
+      { name: 'Envenenar Adaga',  mod: 1, dmgMin: 4, dmgMax: 8, poison: true },
+    ],
+    2: [{ name: 'Invisibilidade', mod: 0, dmgMin: 0, dmgMax: 0, special: 'Requer d20 ≥ 6' }],
+    3: [{ name: 'Chuva de Lâminas', mod: 4, dmgMin: 5, dmgMax: 9 }],
+  },
+};
+
+const selClass = document.getElementById('sel-class');
+const selAct   = document.getElementById('sel-act');
+const selPower = document.getElementById('sel-power');
+
+function updatePowers() {
+  const cls = selClass.value;
+  const act = selAct.value;
+  selPower.innerHTML = '<option value="">Selecionar poder</option>';
+  if (!cls || !POWERS[cls] || !POWERS[cls][act]) return;
+  POWERS[cls][act].forEach((p, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = p.name;
+    selPower.appendChild(opt);
+  });
+}
+
+selClass.addEventListener('change', updatePowers);
+selAct.addEventListener('change', updatePowers);
+
+const VERDICTS = {
+  nat20:  '⚔ Crítico! Dano dobrado!',
+  strong: '✦ Acerto forte — +50% dano',
+  hit:    '• Acerto normal',
+  weak:   '↓ Acerto fraco — −25% dano',
+  fumble: '✗ Fumble! Efeito colateral!',
+};
+
+function rollD20() { return Math.floor(Math.random() * 20) + 1; }
+
+function doRoll() {
+  const cls   = selClass.value;
+  const act   = parseInt(selAct.value);
+  const pi    = selPower.value;
+  const display = document.getElementById('d20-display');
+  const svg     = document.getElementById('d20-svg');
+  const numEl   = document.getElementById('d20-num');
+  const resEl   = document.getElementById('roll-result');
+  const verdEl  = document.getElementById('roll-verdict');
+  const dmgEl   = document.getElementById('roll-damage');
+
+  // Spin animation
+  svg.classList.remove('rolling');
+  void svg.offsetWidth;
+  svg.classList.add('rolling');
+
+  setTimeout(() => {
+    const roll = rollD20();
+    numEl.textContent = roll;
+
+    // Determine tier
+    let tier, multiplier;
+    if (roll === 20)      { tier = 'nat20';  multiplier = 2.0; }
+    else if (roll >= 15)  { tier = 'strong'; multiplier = 1.5; }
+    else if (roll >= 10)  { tier = 'hit';    multiplier = 1.0; }
+    else if (roll >= 5)   { tier = 'weak';   multiplier = 0.75; }
+    else                  { tier = 'fumble'; multiplier = 0; }
+
+    // Result number style
+    resEl.className = 'roll-result result-pop';
+    if (roll === 20) { resEl.classList.add('nat20'); numEl.setAttribute('fill','#F9E79F'); }
+    else if (roll === 1) { resEl.classList.add('fumble'); numEl.setAttribute('fill','#E74C3C'); }
+    else { numEl.setAttribute('fill','#C9A84C'); }
+
+    resEl.textContent = roll;
+    verdEl.textContent = VERDICTS[tier] || '';
+
+    // Damage calculation
+    if (cls && POWERS[cls] && POWERS[cls][act] && pi !== '') {
+      const power = POWERS[cls][act][parseInt(pi)];
+      if (power && power.dmgMax > 0) {
+        const baseDmg = Math.floor(Math.random() * (power.dmgMax - power.dmgMin + 1)) + power.dmgMin;
+        const finalDmg = tier === 'fumble' ? 0 : Math.round(baseDmg * multiplier);
+
+        if (power.heal) {
+          dmgEl.textContent = tier === 'fumble' ? 'Fumble — cura o inimigo!' : `+${finalDmg} HP restaurados`;
+        } else if (power.double) {
+          const roll2 = rollD20();
+          const base2 = Math.floor(Math.random() * (power.dmgMax - power.dmgMin + 1)) + power.dmgMin;
+          dmgEl.textContent = tier === 'fumble' ? 'Fumble!' : `${finalDmg} + ${Math.round(base2 * (roll2 >= 15 ? 1.5 : 1))} dano total`;
+        } else if (power.pet) {
+          const petRoll = rollD20();
+          const petDmg  = Math.floor(Math.random() * 4) + 3;
+          dmgEl.textContent = tier === 'fumble' ? 'Fumble!' : `${finalDmg} + ${petDmg} (pet d20:${petRoll}) = ${finalDmg + petDmg} dano`;
+        } else {
+          dmgEl.textContent = tier === 'fumble' ? 'Fumble — habilidade falha!' : `${finalDmg} de dano`;
+        }
+      } else if (power && power.special) {
+        dmgEl.textContent = tier === 'fumble' ? 'Fumble!' : `${roll} — ${roll >= 8 ? 'sucesso' : 'falhou'} (${power.special})`;
+      } else {
+        dmgEl.textContent = '';
+      }
+    } else {
+      dmgEl.textContent = '';
+    }
+
+    svg.classList.remove('rolling');
+  }, 450);
+}
+</script>
+</body>
+</html>

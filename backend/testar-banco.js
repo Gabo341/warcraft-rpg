@@ -11,7 +11,7 @@
 const { Pool } = require('pg');
 
 // String de conexao direta (so para teste — em producao use .env)
-const DATABASE_URL = 'postgresql://postgres:warcraftrpg123!@db.vxabonpfiubijkukjguo.supabase.co:5432/postgres';
+const DATABASE_URL = "";
 
 const pool = new Pool({
   connectionString: DATABASE_URL,
@@ -28,15 +28,7 @@ async function testar() {
     // --- 2. Busca o player mais recente cadastrado ---
     // Retorna: id, nome, classe, raca, cena atual, flags e final
     const players = await pool.query(`
-      SELECT
-        id,
-        name,
-        class,
-        race,
-        current_scene_slug,
-        flags,
-        ending,
-        created_at
+      SELECT *
       FROM players
       ORDER BY created_at DESC
       LIMIT 1

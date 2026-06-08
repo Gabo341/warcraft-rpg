@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warcraft RPG — Roteiro Narrativo Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #C9A84C; --gold-lt: #E8C97A; --gold-dk: #7A5C1E;
+  --stone: #1A1814; --stone2: #22201C; --stone3: #2E2B24; --stone4: #3D3930;
+  --fog: #8C8070; --parch: #EDE4CC;
+  --act1: #1D9E75; --act1-lt: #82E0AA;
+  --act2: #E67E22; --act2-lt: #F5B07B;
+  --act3a: #2471A3; --act3a-lt: #85C1E9;
+  --act3b: #7F77DD; --act3b-lt: #C39BD3;
+  --act4: #922B21; --act4-lt: #F1948A;
+  --r: 10px; --r-sm: 6px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--stone);
+  color: var(--parch);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.7;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -5%, #1a1005 0%, transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.025) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.025) 40px);
+}
+
+/* ── HEADER ── */
+header { text-align: center; padding: 2.5rem 1rem 1.5rem; }
+header::after { content:''; display:block; width:55%; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:1.2rem auto 0; }
+.eyebrow { font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.3em; color:var(--gold); text-transform:uppercase; margin-bottom:.4rem; }
+h1 { font-family:'Cinzel Decorative',serif; font-size:clamp(1.5rem,3.5vw,2.5rem); color:var(--gold-lt); text-shadow:0 0 40px rgba(201,168,76,.25); }
+.subtitle { color:var(--fog); font-style:italic; font-size:.95rem; margin-top:.3rem; }
+
+/* ── LAYOUT ── */
+.container { max-width:900px; margin:0 auto; padding:0 1.5rem 5rem; }
+
+/* ── NAV TOC ── */
+.toc {
+  background:var(--stone2); border:1px solid var(--stone4);
+  border-radius:var(--r); padding:1.3rem 1.5rem; margin-bottom:2rem;
+}
+.toc-title { font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:.8rem; }
+.toc-list { display:flex; flex-direction:column; gap:.3rem; }
+.toc-link {
+  font-family:'Cinzel',serif; font-size:.78rem; color:var(--fog);
+  text-decoration:none; padding:.2rem .5rem; border-radius:var(--r-sm);
+  transition:color .2s, background .2s; display:flex; align-items:center; gap:.6rem;
+}
+.toc-link:hover { color:var(--gold-lt); background:rgba(201,168,76,.07); }
+.toc-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* ── ACT HEADER ── */
+.act-header {
+  border-radius:var(--r); padding:1.4rem 1.6rem; margin:2.5rem 0 1.2rem;
+  position:relative; overflow:hidden;
+}
+.act-header::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+.act-eyebrow { font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; opacity:.8; margin-bottom:.3rem; }
+.act-title { font-family:'Cinzel Decorative',serif; font-size:clamp(1.1rem,2.5vw,1.6rem); margin-bottom:.4rem; }
+.act-summary { font-size:.9rem; opacity:.8; font-style:italic; }
+
+.act1-header  { background:rgba(29,158,117,.1);  border:1px solid rgba(29,158,117,.3); color:var(--act1-lt); }
+.act1-header::before { background:var(--act1); }
+.act2-header  { background:rgba(230,126,34,.1);  border:1px solid rgba(230,126,34,.3); color:var(--act2-lt); }
+.act2-header::before { background:var(--act2); }
+.act3a-header { background:rgba(36,113,163,.1);  border:1px solid rgba(36,113,163,.3); color:var(--act3a-lt); }
+.act3a-header::before { background:var(--act3a); }
+.act3b-header { background:rgba(127,119,221,.1); border:1px solid rgba(127,119,221,.3); color:var(--act3b-lt); }
+.act3b-header::before { background:var(--act3b); }
+.act4-header  { background:rgba(146,43,33,.1);   border:1px solid rgba(146,43,33,.3);  color:var(--act4-lt); }
+.act4-header::before { background:var(--act4); }
+
+/* ── SCENE CARD ── */
+.scene-card {
+  background:var(--stone2); border:1px solid var(--stone4);
+  border-radius:var(--r); margin-bottom:1.4rem; overflow:hidden;
+}
+.scene-top {
+  padding:1rem 1.4rem .8rem;
+  border-bottom:1px solid var(--stone3);
+  display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;
+  flex-wrap:wrap;
+}
+.scene-id {
+  font-family:'Cinzel',serif; font-size:.62rem; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--fog);
+  background:var(--stone3); padding:.2rem .6rem; border-radius:var(--r-sm);
+  flex-shrink:0;
+}
+.scene-title { font-family:'Cinzel',serif; font-size:1.05rem; color:var(--gold-lt); flex:1; }
+.scene-meta { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.4rem; }
+.meta-pill {
+  font-family:'Cinzel',serif; font-size:.58rem; letter-spacing:.07em;
+  text-transform:uppercase; padding:.15rem .55rem; border-radius:999px; border:1px solid;
+}
+.pill-bg   { color:#a89060; border-color:#4a3a1a; background:rgba(74,58,26,.3); }
+.pill-spr  { color:#608090; border-color:#1a3a4a; background:rgba(26,58,74,.3); }
+.pill-flag { color:#607860; border-color:#1a3a1a; background:rgba(26,58,26,.3); }
+.pill-req  { color:#906080; border-color:#3a1a2a; background:rgba(58,26,42,.3); }
+
+/* ── NARRATIVE ── */
+.scene-body { padding:1.2rem 1.4rem; }
+.narrative {
+  font-size:.97rem; color:var(--parch); line-height:1.85;
+  border-left:2px solid var(--stone4); padding-left:1rem;
+  margin-bottom:1rem; font-style:italic;
+}
+.narrative p + p { margin-top:.8rem; }
+.narrative em { font-style:normal; color:var(--gold-lt); }
+
+/* ── DIALOGUE ── */
+.dialogue { margin-bottom:1rem; }
+.dialogue-line {
+  display:grid; grid-template-columns:110px 1fr;
+  gap:.3rem .8rem; margin-bottom:.5rem; font-size:.9rem;
+}
+.speaker {
+  font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.06em;
+  text-transform:uppercase; padding-top:.15rem; text-align:right;
+}
+.speaker.arthas  { color:#8BC4E8; }
+.speaker.jaina   { color:#E8C4F0; }
+.speaker.uther   { color:#F0D878; }
+.speaker.player  { color:#A8D8A8; }
+.speaker.narrator{ color:var(--fog); font-style:italic; }
+.speaker.malganis{ color:#D08080; }
+.speaker.terenas { color:#E8D098; }
+.line-text { color:var(--parch); line-height:1.5; }
+.line-text em { color:var(--fog); font-style:italic; font-size:.85rem; }
+
+/* ── CHOICES ── */
+.choices-block { margin-top:1rem; }
+.choices-label {
+  font-family:'Cinzel',serif; font-size:.62rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold-dk); margin-bottom:.6rem;
+}
+.choice-item {
+  background:var(--stone3); border:1px solid var(--stone4);
+  border-radius:var(--r-sm); padding:.7rem 1rem; margin-bottom:.5rem;
+  display:grid; grid-template-columns:auto 1fr auto;
+  gap:.6rem; align-items:start;
+}
+.choice-letter {
+  font-family:'Cinzel Decorative',serif; font-size:1rem;
+  color:var(--gold-dk); line-height:1;
+}
+.choice-label { font-family:'Cinzel',serif; font-size:.82rem; color:var(--parch); margin-bottom:.2rem; }
+.choice-desc  { font-size:.82rem; color:var(--fog); line-height:1.4; }
+.choice-right { display:flex; flex-direction:column; gap:.3rem; align-items:flex-end; flex-shrink:0; }
+.choice-flag {
+  font-family:'Cinzel',serif; font-size:.58rem; letter-spacing:.06em;
+  text-transform:uppercase; padding:.15rem .55rem; border-radius:999px;
+  border:1px solid; white-space:nowrap;
+}
+.flag-sets    { color:#82E0AA; border-color:rgba(29,158,117,.5); background:rgba(29,158,117,.12); }
+.flag-sets::before { content:'seta '; opacity:.6; }
+.flag-req-c   { color:#C39BD3; border-color:rgba(127,119,221,.5); background:rgba(127,119,221,.12); }
+.flag-req-c::before { content:'requer '; opacity:.6; }
+.choice-next  { font-family:'Cinzel',serif; font-size:.58rem; color:var(--fog); white-space:nowrap; }
+.choice-next::before { content:'→ '; }
+
+/* ── SCENE DIVIDER ── */
+.scene-sep { text-align:center; color:var(--stone4); font-size:.8rem; letter-spacing:.3em; margin:.2rem 0 .2rem; }
+
+/* ── IMAGES NOTE ── */
+.assets-note {
+  background:var(--stone3); border-radius:var(--r-sm);
+  padding:.6rem .9rem; margin-top:.8rem;
+  font-size:.78rem; color:var(--fog); display:flex; gap:.5rem; align-items:flex-start;
+}
+.assets-note strong { color:var(--gold-dk); font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; }
+
+/* ── FOOTER ── */
+footer { text-align:center; padding:2rem; color:var(--stone4); font-size:.75rem; font-family:'Cinzel',serif; letter-spacing:.15em; border-top:1px solid var(--stone3); }
+
+/* ── UTILS ── */
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold-dk),transparent); margin:2rem 0; }
+hr.soft { border:none; border-top:1px solid var(--stone3); margin:1rem 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Warcraft RPG de Texto — Documento de Design</p>
+  <h1>Roteiro Narrativo Completo</h1>
+  <p class="subtitle">Todos os atos, cenas, diálogos e escolhas</p>
+</header>
+
+<div class="container">
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Índice de cenas</div>
+  <div class="toc-list">
+    <a class="toc-link" href="#ato1"><span class="toc-dot" style="background:var(--act1)"></span>Ato 1 — A praga chega ao reino (EP01–EP03)</a>
+    <a class="toc-link" href="#ato2"><span class="toc-dot" style="background:var(--act2)"></span>Ato 2 — O ponto sem retorno (EP04–EP06)</a>
+    <a class="toc-link" href="#ato3a"><span class="toc-dot" style="background:var(--act3a)"></span>Ato 3A — Caminho da Luz (EP07A–EP09A)</a>
+    <a class="toc-link" href="#ato3b"><span class="toc-dot" style="background:var(--act3b)"></span>Ato 3B — Caminho Sombrio (EP07B–EP09B)</a>
+    <a class="toc-link" href="#ato4"><span class="toc-dot" style="background:var(--act4)"></span>Ato 4 — A queda do rei (EP10–EP12)</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ATO 1
+════════════════════════════════════════ -->
+<div id="ato1" class="act-header act1-header">
+  <div class="act-eyebrow">Ato 1 · Tom: esperança que se desfaz</div>
+  <div class="act-title">A praga chega ao reino</div>
+  <div class="act-summary">O jogador chega a Lordaeron como soldado da escolta de Arthas. O mundo parece normal — por enquanto. Três episódios estabelecem o mundo, os personagens e a primeira decisão moral.</div>
+</div>
+
+<!-- EP01 -->
+<div class="scene-card" id="ep01">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP01 · slug: brill_arrival</div>
+      <div class="scene-title">Chegada a Brill</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: brill_town_day.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_standing.png</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>A estrada de terra que leva a Brill é larga e bem conservada — sinal de que esta cidade já foi próspera. Campos de trigo dourado se estendem dos dois lados, e o cheiro de pão vindo das padarias ainda alcança o ar da manhã. Cavalos, carroças e crianças fazendo barulho. Uma cidade viva.</p>
+      <p>Você cavalga atrás do Príncipe Arthas Menethil, terceiro na linha de sucessão ao trono de Lordaeron e paladino da Ordem da Mão de Prata. Ele tem vinte e três anos, ombros largos e um sorriso que convence qualquer pessoa de que tudo vai ficar bem. Ao lado dele, Jaina Proudmoore — maga de Dalaran, cabelos dourados e olhos que calculam tudo antes de falar.</p>
+      <p>O rei Terenas os enviou para investigar rumores. Aldeões desaparecendo. Animais mortos sem marca de predador. Colheitas apodrecendo do dia para a noite. <em>"Provavelmente histeria,"</em> disse o conselheiro real. Arthas não pareceu convencido. Jaina tampouco.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Brill. Já estive aqui quando criança. O prefeito Aelthalyien fazia o melhor mel de todo o norte. <em>(pausa, olhando para a praça central)</em> Parece menor do que eu lembrava.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text">Os lugares sempre parecem menores quando a responsabilidade cresce. <em>(baixinho, para você)</em> Fique atento. Vim dois dias antes de vocês. Algo está errado aqui — não consigo precisar o quê.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Vamos falar com o prefeito primeiro. Depois fazemos uma ronda pelos arredores. <em>(para você)</em> Soldado — você vem comigo.</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>O prefeito Aelthalyien recebe vocês no salão da prefeitura com a expressão de um homem que não dormiu bem há dias. Ele serve vinho que ninguém toca e fala rápido demais — sobre o quanto a cidade está bem, sobre como os rumores são exagerados, sobre como tudo que Arthas precisa é de um bom descanso antes de voltar para a capital.</p>
+      <p>Durante a conversa, você nota uma coisa. Numa das janelas laterais, uma mulher velha passa — e para por um segundo, olhando para dentro com uma expressão que você não consegue classificar. Medo? Súplica? Antes que você possa reagir, ela desaparece na viela.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Seguir a velha discretamente</div>
+          <div class="choice-desc">Você pede licença e sai pela lateral enquanto Arthas ainda fala com o prefeito. A velha está te esperando na viela — ela parece aliviada.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">brill_old_woman</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Ficar e ouvir o prefeito</div>
+          <div class="choice-desc">Você permanece ao lado de Arthas. O prefeito continua falando. Quando saem, a velha sumiu — mas alguém rabiscou uma palavra na parede da viela: "CELEIRO".</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">brill_barn</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — brill_town_day.jpg · arthas_standing.png · jaina_standing.png · mayor_npc.png
+    </div>
+  </div>
+</div>
+
+<!-- EP01b - cena da velha / celeiro -->
+<div class="scene-card" id="ep01b">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP01b · slug: brill_barn</div>
+      <div class="scene-title">O Celeiro Selado</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: brill_barn_night.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_standing.png</span>
+        <span class="meta-pill pill-flag">seta: warned_villagers (opção A)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>O celeiro fica no limite leste de Brill, longe da praça. A corrente na porta é nova — comprada recentemente, grossa demais para um celeiro comum. Do interior vêm sons abafados. Não de animais. De pessoas.</p>
+      <p>Arthas para na frente da porta. Jaina cruza os braços. Você conta pelo menos quatro vozes lá dentro — adultos, uma criança. A velha, se foi ela quem te trouxe aqui, está de joelhos alguns metros atrás, rezando em silêncio.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Quem colocou essas pessoas aqui? <em>(para você)</em> Você sabia disso antes de me trazer?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text">Arthas. Espera. <em>(ela coloca a mão perto da porta, fecha os olhos por um momento)</em> Tem magia aqui. Não é feitiçaria — é corrupção. Biológica. Esse grão que eles comeram...</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(interrompendo)</em> Vamos abrir essa porta. Não vou deixar cidadãos de Lordaeron trancados como animais.</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>Quando a corrente cede e a porta abre, o cheiro vem primeiro — algo adocicado e podre ao mesmo tempo. Os quatro aldeões dentro estão vivos, mas mal. Olhos avermelhados, veias escurecidas nos pescoços, tremores intermitentes. Uma delas — a mais velha — tenta falar, mas o que sai é metade palavra, metade gemido.</p>
+      <p>Ela consegue dizer três coisas: <em>"o grão,"</em> <em>"Kel'Thuzad,"</em> e <em>"fujam."</em> Depois para de tremer. Depois para de respirar.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Avisar os outros aldeões agora</div>
+          <div class="choice-desc">Você sai correndo para a praça e grita que o grão está envenenado. Caos imediato — mas algumas famílias jogam fora o que tinham em casa. Arthas fica furioso com a desordem. O prefeito fica pálido.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">warned_villagers</span>
+          <span class="choice-next">ep02_plague_confirmed</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Reportar ao prefeito primeiro</div>
+          <div class="choice-desc">Protocolo. Você leva a informação ao prefeito, que sela o celeiro e pede silêncio "para não gerar pânico". Quando voltam no dia seguinte, os quatro viraram outra coisa.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">enforced_quarantine</span>
+          <span class="choice-next">ep02_plague_confirmed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — brill_barn_night.jpg · arthas_standing.png · jaina_standing.png · villager_sick.png
+    </div>
+  </div>
+</div>
+
+<!-- EP02 -->
+<div class="scene-card" id="ep02">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP02 · slug: plague_confirmed</div>
+      <div class="scene-title">A Praga Confirmada</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_road.jpg</span>
+        <span class="meta-pill pill-spr">sprite: jaina_standing.png</span>
+        <span class="meta-pill pill-flag">seta: investigated_kelthuzad (opção A)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Jaina passou a noite estudando amostras do grão. Quando o sol nasce, ela tem a resposta — e o rosto de quem preferia não ter encontrado. A praga não é acidente. Alguém preparou aquele grão para transformar quem o comesse. Não em doente. Em morto-vivo consciente por tempo suficiente para continuar comendo, distribuindo, infectando.</p>
+      <p>O nome que a aldeã murmurou antes de morrer — Kel'Thuzad — é conhecido. Um membro expulso do Kirin Tor de Dalaran por estudar necromancia proibida. Sumiu há anos. Agora reaparece como autor de uma praga que já se espalhou por pelo menos seis aldeias ao norte de Brill.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text">A transformação leva entre quarenta e oito e setenta e duas horas após o consumo. Depois disso, não há reversão. Qualquer pessoa que comeu desse grão nos últimos três dias está... condenada.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(em voz baixa, quase para si mesmo)</em> Quantas aldeias disseste? Seis?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text">Que eu tenha confirmação. Podem ser mais. O grão foi distribuído por um mercador — rastreamos até Andorhal. É de lá que vem o suprimento para toda a região.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Então é para Andorhal que vamos. <em>(para você)</em> Você investigaria Kel'Thuzad se eu deixasse seguir adiante sozinho?</span>
+      </div>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Investigar Kel'Thuzad antes de seguir</div>
+          <div class="choice-desc">Você pede uma hora e vasculha os registros da prefeitura. Encontra uma carta — endereçada ao prefeito, assinada com um selo de gelo. A carta menciona "o processo de purificação das almas" e uma cidade: Stratholme. Você copia e leva para Arthas.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">investigated_kelthuzad</span>
+          <span class="choice-next">ep03_andorhal</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Seguir direto para Andorhal com Arthas</div>
+          <div class="choice-desc">Não há tempo. Cada hora conta. Você monta e segue o príncipe, deixando Brill para trás com suas perguntas sem resposta.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep03_andorhal</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_road.jpg · jaina_standing.png · arthas_standing.png
+    </div>
+  </div>
+</div>
+
+<!-- EP03 -->
+<div class="scene-card" id="ep03">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP03 · slug: andorhal_quarantine</div>
+      <div class="scene-title">Andorhal — A Quarentena</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: andorhal_gate.jpg</span>
+        <span class="meta-pill pill-spr">sprite: uther_standing.png</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Andorhal é maior do que Brill. Uma cidade de mercadores, com um celeiro central que abastece metade do norte de Lordaeron. Quando chegam, Uther Lightbringer já está lá — velho, enorme, com a armadura dourada da Mão de Prata amassada em lugares que contam histórias. Ele abraça Arthas com a força de um pai, depois recua e olha o jovem príncipe nos olhos por tempo suficiente para que o abraço signifique alguma coisa.</p>
+      <p>A situação em Andorhal é pior do que Brill. Ruas desertas no meio da tarde. Portas fechadas. Um cheiro que você aprendeu a reconhecer. No celeiro central, soldados de Uther mantêm um perímetro. Dentro, estima-se que há trezentas pessoas. Algumas ainda humanas. A maioria, não por muito mais tempo.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker uther">Uther</span>
+        <span class="line-text">Arthas. Não há solução bonita aqui. Selamos o celeiro. Ninguém entra, ninguém sai. Quem vier de fora, orientamos a não tocar em comida local e seguir para o sul.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">E as trezentas pessoas dentro?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker uther">Uther</span>
+        <span class="line-text"><em>(uma pausa longa)</em> Rezamos por elas.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(girando para você)</em> Você concorda com isso?</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>Arthas te olha com uma intensidade que não é de príncipe para soldado — é de um homem que precisa saber se tem alguém ao lado que pensa da mesma forma que ele. A quarentena de Uther é fria, calculada, e provavelmente correta do ponto de vista estratégico. Mas há trezentas pessoas dentro daquele celeiro que ainda têm nome, ainda têm família.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador — sem flag, mas muda diálogo em Stratholme</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">"Precisamos tentar salvar quem ainda pode ser salvo"</div>
+          <div class="choice-desc">Você concorda com Arthas. Uther fecha os olhos. Jaina não fala nada. Arthas assente — você acabou de se tornar o tipo de soldado que ele procurava.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep04_stratholme_gates</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">"Uther está certo. Conter a praga é o que salva mais vidas"</div>
+          <div class="choice-desc">Uther te olha com algo próximo de gratidão. Arthas não fala, mas você vê a mandíbula dele se fechar. Jaina te olha com um leve aceno — como se você tivesse feito a escolha difícil e certa.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep04_stratholme_gates</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — andorhal_gate.jpg · uther_standing.png · arthas_standing.png · jaina_standing.png
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════
+     ATO 2
+════════════════════════════════════════ -->
+<div id="ato2" class="act-header act2-header">
+  <div class="act-eyebrow">Ato 2 · Tom: fogo e fumaça / tragédia inevitável</div>
+  <div class="act-title">O ponto sem retorno</div>
+  <div class="act-summary">A chegada a Stratholme. O dilema mais cruel da história — e a bifurcação que divide o jogo em dois caminhos permanentes. Arthas, Jaina e Uther cada um defendendo uma verdade diferente.</div>
+</div>
+
+<!-- EP04 -->
+<div class="scene-card" id="ep04">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP04 · slug: stratholme_gates</div>
+      <div class="scene-title">Os Portões de Stratholme</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: stratholme_gates_day.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_standing.png</span>
+        <span class="meta-pill pill-flag">seta: questioned_arthas (opção B)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Stratholme é a maior cidade do norte de Lordaeron. Muralhas de pedra cinza, torres de vigia, um mercado que funciona há duzentos anos. Agora, à distância, você vê fumaça saindo de pelo menos três pontos dentro das muralhas — e isso é de manhã.</p>
+      <p>Arthas para o cavalo a quinhentos metros dos portões. Ele fica imóvel por um longo momento, olhando para a cidade, e quando fala, a voz está diferente — mais pesada, como se as palavras custassem alguma coisa física para serem ditas.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Stratholme recebeu o mesmo grão de Andorhal. O carregamento chegou três dias atrás. <em>(pausa)</em> Jaina. Quanto tempo?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text"><em>(com a voz embargada)</em> Se o grão chegou há três dias... a maioria da população já consumiu. A transformação começa em menos de doze horas agora. Arthas, não há como—</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Eu sei. <em>(ele desce do cavalo)</em> Então precisamos purgar a cidade antes que eles se levantem. Cada morto-vivo que sair daqui vai infectar outras cinco pessoas. Dez. Cem.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker uther">Uther</span>
+        <span class="line-text">Arthas. Você está falando de matar pessoas inocentes. Essas pessoas ainda estão vivas. Você é um paladino — isso viola tudo que—</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(cortando)</em> Elas estão mortas, Uther. Elas só ainda não sabem disso. Eu escolho salvar as que ainda podem ser salvas — todos os outros reinos ao sul dessas muralhas.</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>Uther arranca a capa e a joga no chão aos pés de Arthas. <em>"Então faça sem mim."</em> Ele monta e parte para o sul sem olhar para trás, levando metade dos cavaleiros com ele.</p>
+      <p>Jaina fica. Ela olha para Arthas por um tempo que parece longo demais — como se estivesse procurando dentro dele a pessoa que ela conhecia. Depois olha para você.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador — a decisão central do jogo</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Questionar Arthas publicamente antes de decidir</div>
+          <div class="choice-desc">Você dá um passo à frente e faz a pergunta que todo mundo está pensando: "Meu príncipe — existe certeza de que não há cura? Que não há outra forma?" Arthas te olha por um segundo. Depois responde: "Se você encontrar uma antes do pôr do sol, eu paro. Mas não encontrará." Você não tem resposta. Mas ele notou que você perguntou.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">questioned_arthas</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Ficar em silêncio e esperar Jaina decidir</div>
+          <div class="choice-desc">Você não fala. Arthas não parece incomodado — na verdade, parece aliviado por não ter resistência extra. A próxima decisão é de Jaina.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep05_the_choice</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — stratholme_gates_day.jpg · arthas_standing.png · jaina_standing.png · uther_standing.png
+    </div>
+  </div>
+</div>
+
+<!-- EP05 — A ESCOLHA CENTRAL -->
+<div class="scene-card" id="ep05">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP05 · slug: stratholme_the_choice</div>
+      <div class="scene-title">A Purga — A Escolha</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: stratholme_burning.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-flag">seta: light_path OU dark_path</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Jaina Proudmoore olha para você. Não para Arthas — para você. Como se a decisão fosse sua tanto quanto dela. Como se soubesse que onde você for, o peso vai junto.</p>
+      <p>Arthas já está de frente para os portões de Stratholme, a mão no cabo de Frostmourne — não, não ainda, ainda é a espada de paladino — e a voz da cidade chega até vocês: não gritos de pânico, não ainda. Sons de mercado, crianças, um ferreiro batendo em metal. Sons de pessoas que não sabem.</p>
+      <p>Jaina fala baixo, só para você ouvir.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text">Eu não consigo fazer isso. Não consigo ficar aqui e assistir. Mas também não consigo simplesmente ir embora e deixar você sozinho nessa decisão. <em>(ela te olha diretamente)</em> Você vai ficar?</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>Arthas não ouve. Ele já está descendo a colina em direção aos portões, com a meia dúzia de soldados que restaram. O sol está alto. As chamas dentro de Stratholme estão crescendo — nem mesmo começaram a purga ainda e a cidade já está pegando fogo sozinha, como se o destino fosse impaciente.</p>
+      <p>Você precisa decidir agora.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">⚠ Bifurcação permanente — esta escolha determina o Ato 3</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Ir com Jaina — recusar a purga</div>
+          <div class="choice-desc">Você monta ao lado de Jaina e parte para o sul. Arthas não olha para trás. Quando chegam à colina seguinte, você ouve, distante, o primeiro grito vindo de Stratholme. E depois mais. E mais. Você escolheu seus princípios. O preço é esse som que não vai sair da sua cabeça.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">light_path</span>
+          <span class="choice-next">ep07a_alliance_camp</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Ficar com Arthas — executar a purga</div>
+          <div class="choice-desc">Você desce a colina. Jaina te chama pelo nome uma vez. Você não para. Quando chega ao lado de Arthas, ele te olha de lado — e por um instante, antes da batalha começar, há gratidão genuína naquele olhar. "Fica do meu lado," ele diz. Depois os portões abrem.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">dark_path</span>
+          <span class="choice-next">ep07b_northrend_departure</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — stratholme_burning.jpg · arthas_combat.png · jaina_standing.png
+    </div>
+  </div>
+</div>
+
+<!-- EP06 - cena de transição pós-Stratholme -->
+<div class="scene-card" id="ep06">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP06 · slug: stratholme_aftermath</div>
+      <div class="scene-title">Depois das Chamas</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_road_dusk.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_standing.png</span>
+        <span class="meta-pill pill-req">visto por: ambos os caminhos</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>A fumaça de Stratholme ainda é visível no horizonte quando a noite cai. Você — seja qual for o caminho que escolheu — está parado numa estrada vazia de Lordaeron, e o silêncio ao redor pesa de um jeito diferente do que pesava esta manhã.</p>
+      <p>Arthas não voltou para o acampamento principal. Os rumores que chegam pelos soldados falam de Northrend — que ele quer ir ao norte, encontrar Mal'Ganis, terminar o que a praga começou. Que ele queimou os navios de volta. Que ninguém consegue mais olhar nos olhos dele da mesma forma.</p>
+      <p>Jaina está sentada longe do fogo, escrevendo uma carta para o rei Terenas — você não lê o que está escrito, mas vê a mão dela parar várias vezes antes de continuar.</p>
+      <p>Uther não está. Ninguém sabe onde Uther está.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker narrator">narrador</span>
+        <span class="line-text">O que aconteceu em Stratholme não pode ser desfeito. O que acontecer a seguir ainda está nas suas mãos. Por enquanto.</span>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_road_dusk.jpg · arthas_standing.png · jaina_standing.png
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════
+     ATO 3A — CAMINHO DA LUZ
+════════════════════════════════════════ -->
+<div id="ato3a" class="act-header act3a-header">
+  <div class="act-eyebrow">Ato 3A · Caminho da Luz · Requer: light_path</div>
+  <div class="act-title">A Resistência</div>
+  <div class="act-summary">O jogador acompanha Jaina de volta à Aliança. Lordaeron começa a cair. Uther reúne os últimos paladinos. Arthas retorna — diferente — e o confronto é inevitável.</div>
+</div>
+
+<!-- EP07A -->
+<div class="scene-card" id="ep07a">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP07A · slug: alliance_camp</div>
+      <div class="scene-title">O Acampamento da Aliança</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: alliance_camp.jpg</span>
+        <span class="meta-pill pill-spr">sprite: jaina_standing.png</span>
+        <span class="meta-pill pill-req">requer: light_path</span>
+        <span class="meta-pill pill-flag">seta: jaina_trusted (opção A)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>O acampamento da Aliança ao sul de Lordaeron é maior do que você esperava — e mais silencioso. Há soldados por toda parte, mas o tipo de silêncio que eles carregam não é de descanso. É de pessoas esperando por más notícias que sabem que vêm.</p>
+      <p>Jaina chefia as reuniões estratégicas com uma precisão que não deixa espaço para dúvida, mas você a vê, entre uma reunião e outra, olhando para o norte. Procurando fumaça. Procurando notícias de Arthas.</p>
+      <p>Uther chega ao terceiro dia — sozinho, sem os cavaleiros, com a armadura amassada de um jeito que não acontece em batalha. Acontece em queda. Ele não explica. Senta ao lado do fogo e fica lá por um longo tempo. Quando levanta, procura você especificamente.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker uther">Uther</span>
+        <span class="line-text">Jaina me disse o que você fez em Stratholme. Que você escolheu partir com ela. <em>(pausa)</em> Isso foi difícil. Sei que foi. Um soldado que obedece ordens não é coisa rara. Um soldado que sabe quando não obedecer — esse é raro.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker player">Você</span>
+        <span class="line-text"><em>(a escolha do jogador aqui é o tom — responder com humildade ou com convicção)</em></span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker uther">Uther</span>
+        <span class="line-text">O que vem aí vai ser pior do que Stratholme. Arthas vai voltar. Eu conheço esse garoto desde que ele tinha seis anos — e o que vai voltar vai usar o rosto dele, mas não vai ser ele. Precisamos de pessoas que saibam disso antes que aconteça.</span>
+      </div>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Seguir o plano de Jaina sem reservas</div>
+          <div class="choice-desc">Jaina propõe uma linha defensiva ao sul do Rio Thondroril — conter o avanço dos mortos-vivos sem avançar para o norte. Você apoia publicamente, o que consolida a confiança dela na tropa.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">jaina_trusted</span>
+          <span class="choice-next">ep08a_uther_falls</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Sugerir ir ao norte encontrar Arthas antes que seja tarde</div>
+          <div class="choice-desc">Jaina escuta, considera por um momento — e recusa com gentileza. "Arthas que eu conhecia talvez pudesse ser alcançado. O que voltou de Northrend, não sei." Ela aceita sua opinião, mas mantém o plano.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep08a_uther_falls</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — alliance_camp.jpg · jaina_standing.png · uther_standing.png
+    </div>
+  </div>
+</div>
+
+<!-- EP08A -->
+<div class="scene-card" id="ep08a">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP08A · slug: uther_falls</div>
+      <div class="scene-title">A Morte de Uther</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_ruins.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-req">requer: light_path</span>
+        <span class="meta-pill pill-flag">seta: uther_defended (opção A)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Arthas chega como uma tempestade que você viu se formando no horizonte por dias. Lordaeron não cai de uma vez — cai em pedaços, aldeia por aldeia, até que uma manhã os mortos-vivos estão nas muralhas da capital e o rei Terenas manda mensageiros pedindo ajuda à Aliança.</p>
+      <p>Uther vai com duzentos paladinos. Você vai junto. A batalha nas ruas de Lordaeron City é caótica, barulhenta, cheia de fumaça e mortos que deveriam estar deitados. E no meio de tudo isso, você vê Arthas.</p>
+      <p>Não o Arthas que você conheceu. Esse usa armadura negra, uma espada que parece sugar a luz ao redor, e os olhos — os olhos estão certos, mas algo dentro deles virou ao contrário. Ele está procurando Uther. E Uther, que passou a vida inteira defendendo este reino, vai ao encontro dele sem hesitar.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(com a voz do mesmo jeito, mas vazia)</em> Você me ensinou tudo que sei sobre honra, Uther. Pena que honra não seja suficiente para salvar um reino.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker uther">Uther</span>
+        <span class="line-text">Arthas. Ainda posso ver você lá dentro. Filho — volte.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(sem raiva, o que é pior)</em> Não há mais dentro.</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>Frostmourne sobe. Você está a dez metros. Há mortos-vivos entre você e Uther — não muitos, mas o suficiente para que qualquer escolha tenha um custo.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Lutar para chegar até Uther — tentar interpor-se</div>
+          <div class="choice-desc">Você corta caminho pelos mortos-vivos. Chega perto o suficiente para que Arthas te note. Por um segundo — apenas um — ele para. Uther aproveita para se mover. Não é suficiente para salvá-lo, mas é suficiente para que ele não morra completamente sozinho. Arthas te olha depois, e há algo no olhar — não reconhecimento, mas memória.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">uther_defended</span>
+          <span class="choice-next">ep09a_lordaeron_last_stand</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Proteger os soldados ao redor e recuar</div>
+          <div class="choice-desc">Você faz o que um soldado faz — preserva a tropa. Uther cai. Os duzentos paladinos que sobrevivem chegam ao sul porque você manteve a linha. Jaina vai agradecer. Você nunca vai saber se conseguiria ter chegado a tempo.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep09a_lordaeron_last_stand</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_ruins.jpg · arthas_combat.png · uther_standing.png
+    </div>
+  </div>
+</div>
+
+<!-- EP09A -->
+<div class="scene-card" id="ep09a">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP09A · slug: lordaeron_last_stand</div>
+      <div class="scene-title">O Último Bastião</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_throne.jpg</span>
+        <span class="meta-pill pill-spr">sprite: jaina_standing.png</span>
+        <span class="meta-pill pill-req">requer: light_path</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>O salão do trono de Lordaeron City ainda está de pé — por quanto tempo, ninguém sabe. Jaina organizou os sobreviventes aqui: soldados da Aliança, alguns magos de Dalaran, civis que não tiveram para onde ir. São menos do que deveriam ser. São mais do que você esperava encontrar.</p>
+      <p>A batalha vai chegar aqui. Arthas está vindo. Você sente isso antes de ouvir os gritos dos sentinelas nas torres.</p>
+      <p>Jaina pega sua mão por um segundo — não como gesto romântico, como gesto de alguém que sabe que os próximos minutos vão contar. <em>"Qualquer coisa que aconteça aqui — você fez a escolha certa em Stratholme. Quero que você saiba disso."</em></p>
+    </div>
+
+    <div class="narrative">
+      <p>Os portões do salão explodem. Arthas entra devagar — não tem pressa, os mortos-vivos não têm pressa. Ele para no centro do salão e olha ao redor como se estivesse avaliando um trabalho quase concluído. Depois te vê. Reconhece você. E pela primeira e única vez desde Stratholme, algo muda na expressão dele.</p>
+      <p>Não o suficiente. Mas algo.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Você. Eu me lembro de você. Você partiu com ela. <em>(uma pausa)</em> Isso foi uma escolha inteligente — na época.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker player">Você</span>
+        <span class="line-text"><em>(o jogador pode responder — qualquer resposta leva para o EP10)</em></span>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_throne.jpg · jaina_standing.png · arthas_combat.png
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════
+     ATO 3B — CAMINHO SOMBRIO
+════════════════════════════════════════ -->
+<div id="ato3b" class="act-header act3b-header">
+  <div class="act-eyebrow">Ato 3B · Caminho Sombrio · Requer: dark_path</div>
+  <div class="act-title">A Jornada ao Norte</div>
+  <div class="act-summary">O jogador acompanha Arthas a Northrend, a terra do gelo eterno. A expedição maldita, a traição dos capitães, e Frostmourne — a espada que tudo consome.</div>
+</div>
+
+<!-- EP07B -->
+<div class="scene-card" id="ep07b">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP07B · slug: northrend_departure</div>
+      <div class="scene-title">A Expedição ao Norte</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: northrend_shore.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_standing.png</span>
+        <span class="meta-pill pill-req">requer: dark_path</span>
+        <span class="meta-pill pill-flag">seta: northrend_survived (automática ao avançar)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Os navios deixam Lordaeron antes do amanhecer. Arthas contratou mercenários, convocou soldados, prometeu glória e justiça a quem o seguisse até o fim do mundo. Você foi um dos primeiros a se apresentar — e ele lembrou disso. Quando os outros ainda esperavam na fila, ele te puxou para o lado e disse apenas: <em>"Bem-vindo ao que vai importar de verdade."</em></p>
+      <p>A viagem dura semanas. Northrend aparece primeiro como um cheiro — gelo e sal e algo mais embaixo, como terra que nunca viu o sol. Depois aparece como uma linha branca no horizonte que cresce até engolir o céu. As geleiras de Northrend não são bonitas. São absolutas.</p>
+      <p>No terceiro dia de terra firme, os capitães convocam uma reunião. Os rumores chegaram até eles — rumores de Lordaeron em chamas, de traição, de ordens do rei para retorno imediato. Eles querem ir embora.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(olhando para o mar, de costas para todos)</em> Quantos estão de acordo com os capitães?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker narrator">narrador</span>
+        <span class="line-text">Metade das mãos se erguem. Arthas vira. Olha para cada rosto. Chega até você — e espera.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker player">Você</span>
+        <span class="line-text"><em>(sua mão não se ergue. Arthas assente, mínimo.)</em></span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Então queimem os navios.</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>O fogo dos navios ilumina o horizonte por horas. Os capitães gritam. Alguns choram. Arthas fica olhando as chamas com uma expressão de alguém que acabou de fechar uma porta por dentro — deliberadamente, para que não haja volta.</p>
+      <p>Você percebe, nesse momento, que ele não fez isso para prender os outros. Fez para se prender a si mesmo.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">Escolha do jogador</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Ficar perto de Arthas enquanto os navios queimam</div>
+          <div class="choice-desc">Você fica ao lado dele em silêncio até o último navio afundar. Arthas não fala, mas quando vocês finalmente se movem para o interior, ele vai um passo atrás esperando por você — não na frente, ao lado.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">northrend_survived</span>
+          <span class="choice-next">ep08b_frostmourne</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Ajudar os soldados desesperados a se acalmarem</div>
+          <div class="choice-desc">Você vai até os mercenários que estão prestes a entrar em pânico e consegue manter a ordem. Arthas observa de longe e, depois, diz uma coisa: "Você pensa no coletivo. Vou precisar disso onde estamos indo."</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">northrend_survived</span>
+          <span class="choice-next">ep08b_frostmourne</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — northrend_shore.jpg · arthas_standing.png
+    </div>
+  </div>
+</div>
+
+<!-- EP08B -->
+<div class="scene-card" id="ep08b">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP08B · slug: frostmourne_cave</div>
+      <div class="scene-title">A Caverna de Frostmourne</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: northrend_glacier.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-req">requer: dark_path</span>
+        <span class="meta-pill pill-flag">seta: frostmourne_touched (opção B)</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>A caverna de gelo não aparece nos mapas. Arthas a encontra seguindo algo que ele descreve como <em>"um chamado"</em> — não metafórico, um som real que só ele ouve. Você segue porque ele pediu, e porque a esta altura você escolheu confiar nele até onde isso for possível.</p>
+      <p>O interior da caverna é maior do que o exterior deveria permitir. O gelo nas paredes tem uma transparência estranha — você consegue ver formas dentro, escuras e paradas, como insetos presos em âmbar. O som que Arthas dizia ouvir, dentro da caverna, você também ouve. É grave, constante, como uma nota musical que nenhum instrumento humano pode fazer.</p>
+      <p>No centro da caverna, numa plataforma de gelo, está a espada.</p>
+      <p>Frostmourne é linda de um jeito que nada belo deveria ser. A lâmina é de um azul quase branco, as runas gravadas parecem se mover quando você tenta lê-las, e o frio que emana dela não é o frio do gelo — é o frio da ausência. Como se ela consumisse calor, luz, presença.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(parado na frente da espada, sem se mover)</em> Ela está me chamando desde Lordaeron. Desde antes de Stratholme. Talvez desde antes disso. <em>(pausa)</em> Eu sei o que ela é. Eu sei o que ela faz. E vou pegá-la de qualquer forma, porque não há outra saída que eu consiga enxergar.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker player">Você</span>
+        <span class="line-text"><em>(o jogador observa — a próxima escolha determina o Final)</em></span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <p>Arthas pega Frostmourne. O momento em que a mão dele fecha na empunhadura, a luz da caverna muda — fica azul, fria, e as formas nas paredes de gelo parecem se mover. Ele solta um som que não é grito nem palavra, e fica parado por trinta segundos que parecem muito mais.</p>
+      <p>Quando vira para você, os olhos estão diferentes. Não completamente. Mas o suficiente para que você perceba que algo passou para dentro dele — ou saiu.</p>
+      <p>Ele estende a mão livre em sua direção. A espada pulsa entre eles.</p>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">⚠ Escolha que determina o Final B</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Recuar — não tocar a espada</div>
+          <div class="choice-desc">Você dá um passo atrás. Arthas abaixa a mão sem julgamento. "Tudo bem," ele diz. "Você não precisa." Mas algo na voz dele mudou — como se você tivesse acabado de cruzar uma linha invisível que só ele conseguia ver. Você continua junto. Mas não completamente.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-next">ep09b_lordaeron_march</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Tocar a espada — sentir o frio</div>
+          <div class="choice-desc">Você estende a mão e toca a lâmina. O frio entra pelo dedo, sobe pelo braço, chega ao peito — e por um segundo você sente tudo que Arthas sente: o peso de Lordaeron, a raiva de Mal'Ganis, e algo mais antigo e vazio que nenhuma palavra descreve bem. Você retira a mão. Arthas te olha diferente agora. Como um igual.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">frostmourne_touched</span>
+          <span class="choice-next">ep09b_lordaeron_march</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — northrend_glacier.jpg · arthas_combat.png
+    </div>
+  </div>
+</div>
+
+<!-- EP09B -->
+<div class="scene-card" id="ep09b">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP09B · slug: lordaeron_march</div>
+      <div class="scene-title">A Marcha de Volta</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: northrend_glacier.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-req">requer: dark_path</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>A viagem de volta de Northrend para Lordaeron dura semanas que você mal consegue distinguir uma da outra. Arthas não fala muito. Frostmourne fica sempre na bainha, mas você nunca deixa de saber que ela está lá — há um zumbido baixo, constante, que só para quando você para de prestar atenção.</p>
+      <p>Quando chegam a Lordaeron, a capital ainda está de pé. Mas mal. Os mortos-vivos já estão nas muralhas externas. O rei Terenas mandou mensageiros para Arthas — pedindo explicações sobre Stratholme, sobre Northrend, sobre os navios queimados. Os mensageiros esperavam uma resposta. Arthas passou por eles como se fossem estátuas.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(parando na entrada da cidade, olhando para as torres)</em> Você sabe o que precisa ser feito aqui, não sabe?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker player">Você</span>
+        <span class="line-text"><em>(o jogador não responde — a cena continua independente)</em></span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">O rei não vai ceder o trono voluntariamente. Ele nunca vai entender o que está acontecendo — nenhum deles vai. <em>(pausa, quase para si mesmo)</em> Às vezes a misericórdia mais cruel é a mais necessária.</span>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — northrend_glacier.jpg · arthas_combat.png
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ════════════════════════════════════════
+     ATO 4
+════════════════════════════════════════ -->
+<div id="ato4" class="act-header act4-header">
+  <div class="act-eyebrow">Ato 4 · Convergência · Tom: inevitável / épico</div>
+  <div class="act-title">A queda do rei</div>
+  <div class="act-summary">Os dois caminhos convergem. Arthas sobe as escadarias do trono e mata o rei Terenas. O jogador vive este momento de perspectivas opostas. A escolha final determina o destino.</div>
+</div>
+
+<!-- EP10 -->
+<div class="scene-card" id="ep10">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP10 · slug: throne_room</div>
+      <div class="scene-title">O Salão do Trono</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_throne.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-flag">seta: witnessed_regicide (automática)</span>
+        <span class="meta-pill pill-req">visto por: ambos os caminhos</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>O salão do trono de Lordaeron tem sessenta metros de comprimento e teto alto o suficiente para que a voz ecoe três vezes antes de morrer. Você sabe disso porque ouviu discursos reais aqui — cerimônias, proclamações, o tipo de coisa que acontece quando um reino ainda funciona.</p>
+      <p>Agora o salão está vazio exceto pelo rei Terenas Menethil II sentado no trono — um homem velho, com a coroa ainda na cabeça e as mãos firmes nos apoios de pedra, como se a posição pudesse protegê-lo — e por Arthas, que caminha pela nave central com Frostmourne na mão e passos que não fazem barulho.</p>
+      <p>Você está aqui. De que lado, depende do caminho que escolheu.</p>
+      <p>Se você veio pelo caminho da luz: você entrou pelos fundos com o que restou dos paladinos, tentando chegar ao rei antes de Arthas. Não chegou.</p>
+      <p>Se você veio pelo caminho sombrio: você entrou pela porta principal ao lado de Arthas, de armadura, e o rei te viu antes de ver o filho.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker terenas">Rei Terenas</span>
+        <span class="line-text">Arthas. Meu filho... o que aconteceu com você?</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(parando a três metros do trono)</em> Eu mesmo me perguntei isso, pai. Por um tempo. <em>(Frostmourne sobe)</em> Agora não me pergunto mais.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker narrator">narrador</span>
+        <span class="line-text">A coroa de Lordaeron cai no chão de pedra com um som que vai durar na sua memória por muito tempo. O rei Terenas Menethil II, segundo desse nome, morre de joelhos com as mãos estendidas para o filho.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text"><em>(pegando a coroa do chão, virando-se para você)</em> Agora é a minha vez de governar.</span>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_throne.jpg · arthas_combat.png
+    </div>
+  </div>
+</div>
+
+<!-- EP11 — ESCOLHA FINAL -->
+<div class="scene-card" id="ep11">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">EP11 · slug: final_choice</div>
+      <div class="scene-title">O Destino do Jogador</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_throne.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-flag">seta: chose_resistance OU chose_darkness</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Arthas olha para você por um longo momento. A coroa de Lordaeron ainda está na mão dele, o sangue do rei Terenas ainda úmido em Frostmourne. O salão ao redor está em silêncio — um silêncio que só existe quando algo muito grande acabou e algo muito maior ainda não começou.</p>
+      <p>Ele fala como se soubesse exatamente o que você vai responder. Como se já tivesse ensaiado as duas versões desta conversa.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Tudo que aconteceu desde Brill chegou até aqui. Cada escolha — sua e minha — foi uma pedra num caminho que sempre terminava neste salão. <em>(pausa)</em> A questão agora é o que você faz com o que sabe. Fica? Ou vai?</span>
+      </div>
+    </div>
+
+    <div class="choices-block">
+      <div class="choices-label">⚠ Escolha final — determina o final apresentado</div>
+      <div class="choice-item">
+        <span class="choice-letter">A</span>
+        <div>
+          <div class="choice-label">Resistir — recusar servir a escuridão</div>
+          <div class="choice-desc">Você ergue a arma. Arthas não parece surpreso — parece quase aliviado, como se houvesse uma parte dele que esperava por isso. A batalha não é vencível. Mas você não está lutando para ganhar. Você está lutando para que isso signifique alguma coisa.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">chose_resistance</span>
+          <span class="meta-pill pill-req" style="margin-top:.3rem">requer: light_path</span>
+          <span class="choice-next">final_a</span>
+        </div>
+      </div>
+      <div class="choice-item">
+        <span class="choice-letter">B</span>
+        <div>
+          <div class="choice-label">Ajoelhar-se — escolher as trevas</div>
+          <div class="choice-desc">Você dobra o joelho. Arthas coloca a coroa na cabeça. Olha para você de cima — não com desprezo, com algo mais frio que isso. "Bem-vindo ao novo reino," ele diz. Lordaeron está morta. Você ajudou a matar.</div>
+        </div>
+        <div class="choice-right">
+          <span class="choice-flag flag-sets">chose_darkness</span>
+          <span class="meta-pill pill-req" style="margin-top:.3rem">requer: dark_path + frostmourne_touched</span>
+          <span class="choice-next">final_b</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_throne.jpg · arthas_combat.png
+    </div>
+  </div>
+</div>
+
+<!-- FINAL A -->
+<div class="scene-card" id="final_a">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">FINAL A · slug: ending_light</div>
+      <div class="scene-title">A Chama Resiste</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: alliance_camp_dawn.jpg</span>
+        <span class="meta-pill pill-spr">sprite: player_paladin.png</span>
+        <span class="meta-pill pill-req">requer: light_path + chose_resistance</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Você não venceu. Ninguém venceu hoje. Lordaeron caiu — isso é um fato que vai durar nos livros de história por gerações. O rei está morto. Arthas usa uma coroa e uma espada que não deveriam existir. Os mortos-vivos controlam o norte.</p>
+      <p>Mas você está vivo. Você saiu do salão do trono de Lordaeron com vida — algo que só é possível porque Arthas deixou, por razões que você nunca vai entender completamente. Talvez seja a memória de Brill. Talvez seja algo de Uther que sobrou nele. Talvez seja o simples fato de que ele precisava que alguém sobrevivesse para contar.</p>
+      <p>Você encontra Jaina três dias depois, num acampamento ao sul do Rio Thondroril. Ela não faz perguntas sobre como você sobreviveu — só abre espaço ao lado da fogueira e te passa um copo de algo quente. Você fica sentado lá por um tempo longo, olhando para o norte.</p>
+      <p>As estrelas estão todas no lugar. Isso é mais do que parecia possível esta manhã.</p>
+      <p>Lordaeron caiu. Mas a Aliança ainda respira. E enquanto houver pessoas ao redor desta fogueira que sabem o que Arthas era antes de Frostmourne — o que ele poderia ter sido — há algo para defender. Não um trono. Não um rei. A memória do que um reino pode ser quando escolhe fazer a coisa certa, mesmo quando a coisa certa custa tudo.</p>
+      <p><em>Você escolheu bem. Mesmo quando doeu. Especialmente quando doeu.</em></p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker jaina">Jaina</span>
+        <span class="line-text"><em>(sem olhar da fogueira)</em> Uther dizia que a Luz não promete vitória. Só promete que vale a pena lutar. <em>(pausa)</em> Eu costumava achar isso pouco. Agora acho que é suficiente.</span>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — alliance_camp_dawn.jpg · jaina_standing.png · player_paladin.png (ou classe escolhida)
+    </div>
+  </div>
+</div>
+
+<!-- FINAL B -->
+<div class="scene-card" id="final_b">
+  <div class="scene-top">
+    <div>
+      <div class="scene-id">FINAL B · slug: ending_dark</div>
+      <div class="scene-title">O Reino Cai</div>
+      <div class="scene-meta">
+        <span class="meta-pill pill-bg">bg: lordaeron_ruins_night.jpg</span>
+        <span class="meta-pill pill-spr">sprite: arthas_combat.png</span>
+        <span class="meta-pill pill-req">requer: dark_path + frostmourne_touched + chose_darkness</span>
+      </div>
+    </div>
+  </div>
+  <div class="scene-body">
+    <div class="narrative">
+      <p>Lordaeron à noite, sem luzes nas janelas, parece um lugar que nunca teve pessoas. As ruas que você percorreu desde Brill — o mercado, a prefeitura, a estrada para Andorhal — estão vazias de um jeito que o abandono não explica completamente. Não é que as pessoas foram embora. É que o lugar que elas habitavam foi consumido por outra coisa.</p>
+      <p>Arthas governa de um trono que ainda tem o sangue do rei anterior. Ele não mandou limpar — ou não pensou nisso, ou não se importou, ou ambos. Você fica ao lado direito dele durante a primeira noite, de armadura, olhando para um salão onde não há mais súditos. Só soldados e mortos que andam.</p>
+      <p>Ele te olha eventualmente. Há algo nos olhos dele que você reconhece como gratidão — uma versão fria e distante dela, como gratidão vista através de gelo.</p>
+    </div>
+
+    <div class="dialogue">
+      <div class="dialogue-line">
+        <span class="speaker arthas">Arthas</span>
+        <span class="line-text">Você esteve lá desde o começo. Em Brill. Em Stratholme. Em Northrend. <em>(pausa)</em> A maioria das pessoas não consegue ver além do que estão perdendo. Você viu o que estava sendo construído. Isso é raro.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker narrator">narrador</span>
+        <span class="line-text">O que foi construído é uma pira. Lordaeron queima lentamente — não em chamas, mas em esquecimento. O que você ajudou a construir vai durar séculos, mas não vai ter o nome que você esperava. Vai ter o nome dele. Sempre vai ter o nome dele.</span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker narrator">narrador</span>
+        <span class="line-text">Você sobreviveu. Você ganhou, se ganhar é a palavra certa para isso. Mas nos anos que virão, haverá uma pergunta que vai te acompanhar pela Lordaeron que não existe mais: <em>se eu tivesse ficado com Jaina naquele dia em Stratholme — o que teria sido diferente?</em></span>
+      </div>
+      <div class="dialogue-line">
+        <span class="speaker narrator">narrador</span>
+        <span class="line-text">Você vai aprender a parar de fazer essa pergunta. Demora. Mas aprende.</span>
+      </div>
+    </div>
+
+    <div class="assets-note">
+      <strong>Assets</strong> — lordaeron_ruins_night.jpg · arthas_combat.png · player_warrior.png (ou classe escolhida)
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer>Warcraft: O Caminho do Herói — Roteiro narrativo completo · UNIVATES</footer>
+</body>
+</html>

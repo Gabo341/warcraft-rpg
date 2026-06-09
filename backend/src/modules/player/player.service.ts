@@ -5,7 +5,7 @@
 // o banco de dados. Quem chama este arquivo é o controller.
 // =============================================================
 
-import {pool} from '../lib/db';
+import {pool} from '../../lib/db';
 
 // -------------------------------------------------------------
 // Tipos TypeScript

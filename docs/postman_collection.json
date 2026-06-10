@@ -1,0 +1,251 @@
+{
+  "info": {
+    "name": "Warcraft RPG — API",
+    "description": "Collection completa dos endpoints do backend. Importe no Postman e configure a variável {{base_url}} para http://localhost:3000",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url",  "value": "http://localhost:3000" },
+    { "key": "player_id", "value": "COLE_O_ID_AQUI_APOS_CRIAR_JOGADOR" }
+  ],
+  "item": [
+
+    {
+      "name": "🟢 Health Check",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health",
+        "description": "Verifica se o servidor está rodando. Deve retornar { status: 'ok' }."
+      }
+    },
+
+    {
+      "name": "👤 Players",
+      "item": [
+
+        {
+          "name": "POST /players — Criar jogador (Paladino Humano)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/player",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aldric\",\n  \"class\": \"paladin\",\n  \"race\": \"human\"\n}"
+            },
+            "description": "Cria nova partida. Retorna o jogador com ID e poderes iniciais atribuídos. Copie o 'id' retornado e cole na variável {{player_id}}."
+          }
+        },
+
+        {
+          "name": "POST /players — Criar jogador (Guerreiro Anão)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/player",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Durin\",\n  \"class\": \"warrior\",\n  \"race\": \"dwarf\"\n}"
+            }
+          }
+        },
+
+        {
+          "name": "POST /players — Criar jogador (Ladino Drow)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/player",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Zara\",\n  \"class\": \"rogue\",\n  \"race\": \"night_elf\"\n}"
+            }
+          }
+        },
+
+        {
+          "name": "POST /players — ERRO: classe inválida",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/player",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Teste\",\n  \"class\": \"wizard\",\n  \"race\": \"human\"\n}"
+            },
+            "description": "Deve retornar 400 com mensagem de classe inválida."
+          }
+        },
+
+        {
+          "name": "POST /players — ERRO: campos faltando",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/player",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Incompleto\"\n}"
+            },
+            "description": "Deve retornar 400 pois class e race estão ausentes."
+          }
+        },
+
+        {
+          "name": "GET /players/:id — Buscar jogador",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/player/{{player_id}}",
+            "description": "Retorna estado atual: cena atual, flags acumuladas, classe, raça e poderes."
+          }
+        },
+
+        {
+          "name": "GET /players/:id — ERRO: jogador inexistente",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/player/00000000-0000-0000-0000-000000000000",
+            "description": "Deve retornar 404."
+          }
+        },
+
+        {
+          "name": "PUT /players/:id — Atualizar nome",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/player/{{player_id}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aldric, o Protetor\"\n}"
+            }
+          }
+        },
+
+        {
+          "name": "DELETE /players/:id — Deletar partida",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/player/{{player_id}}",
+            "description": "Remove a partida. Retorna 204 sem corpo."
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "🗺 Scenes",
+      "item": [
+
+        {
+          "name": "GET /scenes/:slug — Primeira cena (sem playerId)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/scenes/brill_arrival",
+            "description": "Retorna a cena sem filtro de flags — todas as choices aparecem."
+          }
+        },
+
+        {
+          "name": "GET /scenes/:slug — Com playerId (choices filtradas)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/scenes/brill_arrival?playerId={{player_id}}",
+              "query": [{ "key": "playerId", "value": "{{player_id}}" }]
+            },
+            "description": "Retorna choices filtradas pelas flags do jogador. Choices com requires_flag só aparecem se a flag existir em players.flags."
+          }
+        },
+
+        {
+          "name": "GET /scenes/:slug — Cena do Ato 2",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/scenes/stratholme_the_choice?playerId={{player_id}}",
+              "query": [{ "key": "playerId", "value": "{{player_id}}" }]
+            }
+          }
+        },
+
+        {
+          "name": "GET /scenes/:slug — ERRO: cena inexistente",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/scenes/cena_que_nao_existe",
+            "description": "Deve retornar 404."
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "⚔ Choices",
+      "item": [
+
+        {
+          "name": "POST /players/:id/choose — Avisar aldeões (seta warned_villagers)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/players/{{player_id}}/choose",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"choiceId\": \"COLE_O_ID_DA_CHOICE_AQUI\"\n}"
+            },
+            "description": "Processa a escolha. Retorna: nextSceneSlug, flagSet, achievement (título e descrição para o popup) e powerUnlocked."
+          }
+        },
+
+        {
+          "name": "POST /players/:id/choose — ERRO: choiceId ausente",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/players/{{player_id}}/choose",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "description": "Deve retornar 400 pois choiceId está ausente."
+          }
+        },
+
+        {
+          "name": "POST /players/:id/choose — ERRO: choice de outra cena",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/players/{{player_id}}/choose",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"choiceId\": \"00000000-0000-0000-0000-000000000000\"\n}"
+            },
+            "description": "Deve retornar 400 pois a choice não pertence à cena atual."
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "⚡ Powers",
+      "item": [
+
+        {
+          "name": "GET /players/:id/powers — Listar poderes",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/players/{{player_id}}/powers",
+            "description": "Retorna todos os poderes desbloqueados pelo jogador, ordenados por ato."
+          }
+        }
+
+      ]
+    }
+
+  ]
+}

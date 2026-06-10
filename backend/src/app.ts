@@ -6,7 +6,8 @@
 // =============================================================
 
 import express from 'express';
-import cors from 'cors';
+import { corsMiddleware } from './middlewares/cors.middleware';
+import { errorMiddleware } from './middlewares/error.middleware';
 
 // Importa os routers de cada módulo
 import playerRouter from './modules/player/player.routes';
@@ -22,14 +23,10 @@ const app = express();
 // Executam em toda requisição, na ordem em que são registrados.
 // -------------------------------------------------------------
 
-// Permite que o Angular (localhost:4200) acesse a API
-// Sem isso o navegador bloqueia as requisições por segurança (CORS)
-app.use(cors({
-    origin: 'http://localhost:4200'
-}));
+// Libera o Angular para acessar a API
+app.use(corsMiddleware);
 
-// Permite que o Express leia o body das requisições em JSON
-// Sem isso o req.body chega undefined
+// Permite ler o body das requisições em JSON
 app.use(express.json());
 
 // -------------------------------------------------------------

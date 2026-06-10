@@ -21,7 +21,7 @@ import { processChoice } from './choice.service';
 export async function processChoiceController(req: Request, res: Response) {
     try {
         // Pega o ID do jogador da URL
-        const { id: playerId } = req.params;
+        const playerId = req.params.id as string;
 
         // Pega o ID da choice do body
         const { choiceId } = req.body;

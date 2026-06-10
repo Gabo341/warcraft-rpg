@@ -115,7 +115,7 @@ export async function processChoice(input: ProcessChoiceInput):
 
         // 7. Busca a próxima cena para verificar o ato
         const nextSceneResult = await client.query(
-            'SELECT act FROM scenes WHERE slug = $1',
+            'SELECT act FROM scene WHERE slug = $1',
             [choice.next_scene_slug]
         );
 

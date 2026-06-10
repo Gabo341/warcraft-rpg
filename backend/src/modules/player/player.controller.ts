@@ -73,7 +73,7 @@ export async function createPlayerController(req: Request, res: Response) {
 // -------------------------------------------------------------
 export async function getPlayerController(req: Request, res: Response) {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
 
         // Chama o service para buscar o jogador no banco
         const player = await getPlayerById(id);
@@ -105,7 +105,7 @@ export async function getPlayerController(req: Request, res: Response) {
 // -------------------------------------------------------------
 export async function updatePlayerController(req: Request, res: Response) {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
         const { name } = req.body;
 
         // Valida se o nome foi enviado
@@ -138,7 +138,7 @@ export async function updatePlayerController(req: Request, res: Response) {
 // -------------------------------------------------------------
 export async function deletePlayerController(req: Request, res: Response) {
     try {
-        const { id } = req.params;
+        const id = req.params.id as string;
 
         // Chama o service para deletar o jogador no banco
         const deletado = await deletePlayer(id);

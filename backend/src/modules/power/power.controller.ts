@@ -16,7 +16,7 @@ import { getPlayerPowers } from './power.service';
 export async function getPlayerPowersController(req: Request, res: Response) {
     try {
         // Pega o ID do jogador da URL
-        const { id: playerId } = req.params;
+        const playerId = req.params.id as string;
 
         // Chama o service para buscar os poderes no banco
         const powers = await getPlayerPowers(playerId);

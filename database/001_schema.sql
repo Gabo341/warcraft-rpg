@@ -102,7 +102,7 @@ CREATE TABLE player_powers (
 -- Sem índice, o Postgres faz full table scan em cada requisição.
 -- =============================================================
 
--- A API busca cenas pelo slug o tempo todo (GET /scenes/:slug)
+-- A API busca cenas pelo slug o tempo todo (GET /scene/:slug)
 CREATE INDEX idx_scenes_slug ON scenes(slug);
 
 -- A API busca choices pela cena corrente do jogador

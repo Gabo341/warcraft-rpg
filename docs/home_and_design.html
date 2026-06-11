@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warcraft RPG — Tela Inicial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ══════════════════════════════════════════
+   TOKENS — paleta WC3 Frozen Throne
+   Contraste Holy Paladin (luz/ouro) vs Death Knight (gelo/trevas)
+══════════════════════════════════════════ */
+:root {
+  /* Base */
+  --void:     #090810;   /* fundo absoluto */
+  --abyss:    #0D0C16;   /* fundo principal */
+  --deep:     #131220;   /* cards / painéis */
+  --surface:  #1C1A2E;   /* superfície elevada */
+  --rim:      #2A2740;   /* bordas sutis */
+
+  /* Holy — ouro sagrado */
+  --holy-bright: #F0C040;
+  --holy-mid:    #C9921A;
+  --holy-dim:    #7A5510;
+  --holy-glow:   rgba(240,192,64,0.18);
+  --holy-trace:  rgba(240,192,64,0.06);
+
+  /* Death Knight — gelo arcano */
+  --dk-bright:  #8AB4D8;
+  --dk-mid:     #4A7FA8;
+  --dk-dim:     #1E3D52;
+  --dk-glow:    rgba(138,180,216,0.15);
+  --dk-trace:   rgba(138,180,216,0.05);
+
+  /* Luz sagrada — efeito paladin */
+  --light-pure:  #E8F4FF;
+  --light-warm:  #FFF5CC;
+
+  /* Textos */
+  --txt-bright: #EDE8D8;
+  --txt-mid:    #A89E80;
+  --txt-dim:    #5A5240;
+
+  /* Sangue / perigo */
+  --blood:      #8B1A1A;
+  --blood-lt:   #C44040;
+
+  /* Transições */
+  --ease: cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--abyss);
+  color: var(--txt-bright);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════
+   TELA INICIAL
+══════════════════════════════════════════ */
+.home {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem 4rem;
+  overflow: hidden;
+}
+
+/* Camadas de fundo */
+.home::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 30% 50%, rgba(240,192,64,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 55% at 70% 50%, rgba(138,180,216,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 60% at 50% 0%,  rgba(9,8,16,.95) 0%, transparent 80%),
+    radial-gradient(ellipse 100% 40% at 50% 100%, rgba(9,8,16,.98) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grade de pedra sutil */
+.home::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg,   transparent, transparent 59px, rgba(255,255,255,.018) 60px),
+    repeating-linear-gradient(90deg,  transparent, transparent 59px, rgba(255,255,255,.018) 60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 700px;
+  width: 100%;
+}
+
+/* Linha divisória ornamental */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.8rem;
+}
+.ornament-line {
+  height: 1px;
+  width: 80px;
+  background: linear-gradient(90deg, transparent, var(--holy-mid));
+}
+.ornament-line.right {
+  background: linear-gradient(90deg, var(--holy-mid), transparent);
+}
+.ornament-gem {
+  width: 8px; height: 8px;
+  background: var(--holy-mid);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px var(--holy-mid);
+}
+
+/* Eyebrow */
+.eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: .65rem;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color: var(--dk-mid);
+  margin-bottom: .8rem;
+}
+
+/* Título principal */
+.home-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: .5rem;
+  /* Gradiente holy-dk no texto */
+  background: linear-gradient(
+    135deg,
+    var(--holy-bright) 0%,
+    var(--light-warm)  30%,
+    var(--dk-bright)   70%,
+    var(--holy-bright) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 24px rgba(240,192,64,.3));
+}
+
+.home-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(.8rem, 2vw, 1rem);
+  letter-spacing: .2em;
+  color: var(--dk-mid);
+  text-transform: uppercase;
+  margin-bottom: 2.4rem;
+}
+
+/* Divisor holy/dk */
+.duality-bar {
+  display: flex;
+  height: 2px;
+  width: 60%;
+  margin: 0 auto 2.4rem;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.duality-holy { flex: 1; background: linear-gradient(90deg, transparent, var(--holy-bright)); }
+.duality-dk   { flex: 1; background: linear-gradient(90deg, var(--dk-bright), transparent); }
+
+/* Lore text */
+.lore {
+  font-size: 1rem;
+  color: var(--txt-mid);
+  font-style: italic;
+  line-height: 1.8;
+  margin-bottom: 2.8rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.lore em {
+  font-style: normal;
+  color: var(--txt-bright);
+}
+
+/* Botão principal */
+.btn-start {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: 'Cinzel', serif;
+  font-size: .85rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: linear-gradient(135deg, var(--holy-bright), var(--holy-mid));
+  border: none;
+  border-radius: 2px;
+  padding: .85rem 2.4rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+  text-decoration: none;
+}
+.btn-start::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.25), transparent);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(240,192,64,.35); }
+.btn-start:hover::before { opacity: 1; }
+.btn-start:active { transform: translateY(0); }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: 'Cinzel', serif;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--dk-bright);
+  background: transparent;
+  border: 1px solid var(--dk-dim);
+  border-radius: 2px;
+  padding: .75rem 1.8rem;
+  cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+  text-decoration: none;
+  margin-left: .8rem;
+}
+.btn-ghost:hover {
+  border-color: var(--dk-bright);
+  background: var(--dk-trace);
+  color: var(--light-pure);
+}
+
+/* Aviso de lore abaixo dos botões */
+.home-warning {
+  margin-top: 2rem;
+  font-family: 'Cinzel', serif;
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--txt-dim);
+}
+
+/* Detalhe canto — runa */
+.corner-rune {
+  position: absolute;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 4rem;
+  opacity: .04;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.corner-rune.tl { top: 1.5rem; left: 2rem; color: var(--holy-bright); }
+.corner-rune.br { bottom: 1.5rem; right: 2rem; color: var(--dk-bright); transform: scaleX(-1); }
+
+/* Glow central ambiental */
+.ambient-glow {
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(120px);
+  opacity: .12;
+}
+.ambient-holy { background: var(--holy-bright); top: 50%; left: 20%; transform: translate(-50%, -50%); }
+.ambient-dk   { background: var(--dk-bright);   top: 50%; left: 80%; transform: translate(-50%, -50%); }
+
+/* ══════════════════════════════════════════
+   PÁGINA DE DESIGN SYSTEM
+══════════════════════════════════════════ */
+.design-page {
+  display: none;
+  min-height: 100vh;
+  background: var(--abyss);
+  padding: 3rem 2rem 5rem;
+}
+.design-page.active { display: block; }
+.home.hidden { display: none; }
+
+.ds-container { max-width: 1000px; margin: 0 auto; }
+
+.ds-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: var(--holy-bright);
+  margin-bottom: .3rem;
+}
+.ds-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--dk-mid);
+  margin-bottom: 2rem;
+}
+.ds-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--holy-dim), var(--dk-dim), transparent);
+  margin-bottom: 2.5rem;
+}
+
+/* Seções */
+.ds-section { margin-bottom: 3rem; }
+.ds-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: .65rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--txt-dim);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+.ds-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rim);
+}
+
+/* ── Cores ── */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: .8rem;
+}
+.color-chip {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--rim);
+}
+.color-swatch {
+  height: 56px;
+}
+.color-info {
+  background: var(--deep);
+  padding: .5rem .7rem;
+}
+.color-name {
+  font-family: 'Cinzel', serif;
+  font-size: .62rem;
+  letter-spacing: .06em;
+  color: var(--txt-bright);
+  display: block;
+  margin-bottom: .15rem;
+}
+.color-hex {
+  font-family: 'Courier New', monospace;
+  font-size: .68rem;
+  color: var(--txt-dim);
+}
+.color-role {
+  font-size: .7rem;
+  color: var(--txt-dim);
+  font-style: italic;
+  display: block;
+  margin-top: .1rem;
+}
+
+/* ── Tipografia ── */
+.type-sample { margin-bottom: 1.2rem; border-left: 2px solid var(--rim); padding-left: 1rem; }
+.type-label {
+  font-family: 'Cinzel', serif;
+  font-size: .6rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--txt-dim);
+  margin-bottom: .3rem;
+}
+
+/* ── Componentes ── */
+.comp-row { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; margin-bottom: 1rem; }
+
+/* ── Cards ── */
+.card-demo {
+  background: var(--deep);
+  border: 1px solid var(--rim);
+  border-radius: 6px;
+  padding: 1.2rem 1.4rem;
+  max-width: 340px;
+  position: relative;
+  overflow: hidden;
+}
+.card-demo::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.card-demo.holy::before  { background: linear-gradient(90deg, var(--holy-dim), var(--holy-bright), var(--holy-dim)); }
+.card-demo.dk::before    { background: linear-gradient(90deg, var(--dk-dim), var(--dk-bright), var(--dk-dim)); }
+
+.card-tag {
+  font-family: 'Cinzel', serif;
+  font-size: .6rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  border: 1px solid;
+  display: inline-block;
+  margin-bottom: .6rem;
+}
+.tag-holy { color: var(--holy-bright); border-color: var(--holy-dim); background: var(--holy-trace); }
+.tag-dk   { color: var(--dk-bright);   border-color: var(--dk-dim);   background: var(--dk-trace); }
+
+.card-demo h4 {
+  font-family: 'Cinzel', serif;
+  font-size: .9rem;
+  color: var(--txt-bright);
+  margin-bottom: .3rem;
+}
+.card-demo p {
+  font-size: .85rem;
+  color: var(--txt-mid);
+  line-height: 1.5;
+}
+
+/* ── Dualidade visual ── */
+.duality-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--rim);
+  margin-top: .8rem;
+}
+.duality-panel {
+  padding: 1.4rem;
+  text-align: center;
+}
+.duality-panel.holy-panel {
+  background: linear-gradient(160deg, var(--deep), rgba(240,192,64,.07));
+}
+.duality-panel.dk-panel {
+  background: linear-gradient(160deg, rgba(138,180,216,.07), var(--deep));
+}
+.duality-icon {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  display: block;
+}
+.duality-panel.holy-panel .duality-icon { color: var(--holy-bright); text-shadow: 0 0 20px rgba(240,192,64,.5); }
+.duality-panel.dk-panel   .duality-icon { color: var(--dk-bright);   text-shadow: 0 0 20px rgba(138,180,216,.5); }
+.duality-panel h3 {
+  font-family: 'Cinzel', serif;
+  font-size: .85rem;
+  margin-bottom: .3rem;
+}
+.duality-panel.holy-panel h3 { color: var(--holy-bright); }
+.duality-panel.dk-panel   h3 { color: var(--dk-bright); }
+.duality-panel p { font-size: .8rem; color: var(--txt-mid); font-style: italic; }
+
+/* ── Regras de uso ── */
+.rules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: .8rem;
+}
+.rule-card {
+  background: var(--deep);
+  border: 1px solid var(--rim);
+  border-radius: 4px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  gap: .8rem;
+}
+.rule-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.2rem;
+  color: var(--holy-dim);
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+.rule-title {
+  font-family: 'Cinzel', serif;
+  font-size: .78rem;
+  color: var(--txt-bright);
+  margin-bottom: .2rem;
+}
+.rule-desc { font-size: .82rem; color: var(--txt-mid); line-height: 1.45; }
+
+/* ── Spacing ── */
+.spacing-row { display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+.spacing-block { text-align: center; }
+.spacing-vis { background: var(--holy-trace); border: 1px solid var(--holy-dim); border-radius: 2px; margin-bottom: .4rem; }
+.spacing-label { font-family: 'Cinzel', serif; font-size: .6rem; color: var(--txt-dim); letter-spacing: .08em; }
+
+/* nav topo design */
+.ds-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rim);
+}
+.ds-nav-back {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--dk-mid);
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: color .2s;
+}
+.ds-nav-back:hover { color: var(--dk-bright); }
+.ds-badge {
+  font-family: 'Cinzel', serif;
+  font-size: .6rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: .2rem .7rem;
+  border: 1px solid var(--holy-dim);
+  border-radius: 999px;
+  color: var(--holy-mid);
+}
+
+/* ── Narrativa / texto de cena ── */
+.narrative-demo {
+  background: var(--deep);
+  border: 1px solid var(--rim);
+  border-radius: 4px;
+  padding: 1.4rem 1.6rem;
+  border-left: 3px solid var(--holy-dim);
+  font-size: .95rem;
+  color: var(--txt-mid);
+  font-style: italic;
+  line-height: 1.85;
+}
+.narrative-demo em { font-style: normal; color: var(--txt-bright); }
+
+/* Animação de entrada suave */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.home-inner > * {
+  animation: fadeUp .6s var(--ease) both;
+}
+.home-inner > *:nth-child(1) { animation-delay: .1s; }
+.home-inner > *:nth-child(2) { animation-delay: .2s; }
+.home-inner > *:nth-child(3) { animation-delay: .3s; }
+.home-inner > *:nth-child(4) { animation-delay: .4s; }
+.home-inner > *:nth-child(5) { animation-delay: .5s; }
+.home-inner > *:nth-child(6) { animation-delay: .6s; }
+.home-inner > *:nth-child(7) { animation-delay: .7s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-inner > * { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     TELA INICIAL
+══════════════════════════════════════════ -->
+<section class="home" id="home">
+  <div class="ambient-glow ambient-holy"></div>
+  <div class="ambient-glow ambient-dk"></div>
+  <span class="corner-rune tl">✦</span>
+  <span class="corner-rune br">✦</span>
+
+  <div class="home-inner">
+
+    <div class="ornament">
+      <span class="ornament-line"></span>
+      <span class="ornament-gem"></span>
+      <span class="ornament-line right"></span>
+    </div>
+
+    <p class="eyebrow">Reino de Lordaeron · Anno Domini III</p>
+
+    <h1 class="home-title">Warcraft<br>O Caminho do Herói</h1>
+
+    <p class="home-subtitle">Um RPG de texto interativo</p>
+
+    <div class="duality-bar">
+      <div class="duality-holy"></div>
+      <div class="duality-dk"></div>
+    </div>
+
+    <p class="lore">
+      A praga avança pelo norte. <em>Arthas Menethil</em> parte para investigar.<br>
+      Você é o soldado ao lado dele — e cada escolha que fizer<br>
+      moldará o destino de um reino.
+    </p>
+
+    <div>
+      <a class="btn-start" href="#" onclick="showDesign(); return false;">
+        ⚔ Começar a aventura
+      </a>
+      <a class="btn-ghost" href="#" onclick="showDesign(); return false;">
+        ◈ Design System
+      </a>
+    </div>
+
+    <p class="home-warning">
+      Suas escolhas são permanentes · Lordaeron não esquece
+    </p>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     DESIGN SYSTEM
+══════════════════════════════════════════ -->
+<div class="design-page" id="design-page">
+<div class="ds-container">
+
+  <div class="ds-nav">
+    <button class="ds-nav-back" onclick="showHome()">← Voltar à tela inicial</button>
+    <span class="ds-badge">Design System v1.0</span>
+  </div>
+
+  <h1 class="ds-title">Design System</h1>
+  <p class="ds-subtitle">Warcraft RPG de Texto — Guia visual de referência</p>
+  <div class="ds-rule"></div>
+
+  <!-- CONCEITO -->
+  <div class="ds-section">
+    <div class="ds-section-title">Conceito visual</div>
+    <div class="duality-demo">
+      <div class="duality-panel holy-panel">
+        <span class="duality-icon">☀</span>
+        <h3>Holy Paladin</h3>
+        <p>Ouro, luz quente, pedra antiga.<br>Esperança que resiste à escuridão.</p>
+      </div>
+      <div class="duality-panel dk-panel">
+        <span class="duality-icon">❄</span>
+        <h3>Death Knight</h3>
+        <p>Gelo arcano, azul frio, vazio.<br>Poder que consome o que toca.</p>
+      </div>
+    </div>
+    <p style="font-size:.85rem;color:var(--txt-dim);margin-top:.8rem;font-style:italic;text-align:center;">
+      O contraste entre os dois é a identidade visual central. Nunca use as cores isoladamente — elas se definem uma pela outra.
+    </p>
+  </div>
+
+  <!-- PALETA -->
+  <div class="ds-section">
+    <div class="ds-section-title">Paleta de cores</div>
+
+    <p style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--txt-dim);margin-bottom:.8rem;">Base</p>
+    <div class="color-grid" style="margin-bottom:1.2rem;">
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#090810"></div>
+        <div class="color-info"><span class="color-name">Void</span><span class="color-hex">#090810</span><span class="color-role">Fundo absoluto</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#0D0C16"></div>
+        <div class="color-info"><span class="color-name">Abyss</span><span class="color-hex">#0D0C16</span><span class="color-role">Fundo principal</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#131220"></div>
+        <div class="color-info"><span class="color-name">Deep</span><span class="color-hex">#131220</span><span class="color-role">Cards / painéis</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#1C1A2E"></div>
+        <div class="color-info"><span class="color-name">Surface</span><span class="color-hex">#1C1A2E</span><span class="color-role">Superfície elevada</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#2A2740"></div>
+        <div class="color-info"><span class="color-name">Rim</span><span class="color-hex">#2A2740</span><span class="color-role">Bordas sutis</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--holy-mid);margin-bottom:.8rem;">Holy — Ouro sagrado</p>
+    <div class="color-grid" style="margin-bottom:1.2rem;">
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#F0C040"></div>
+        <div class="color-info"><span class="color-name">Holy Bright</span><span class="color-hex">#F0C040</span><span class="color-role">CTAs, destaques</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#C9921A"></div>
+        <div class="color-info"><span class="color-name">Holy Mid</span><span class="color-hex">#C9921A</span><span class="color-role">Ícones, bordas</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#7A5510"></div>
+        <div class="color-info"><span class="color-name">Holy Dim</span><span class="color-hex">#7A5510</span><span class="color-role">Bordas sutis</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#FFF5CC"></div>
+        <div class="color-info"><span class="color-name">Light Warm</span><span class="color-hex">#FFF5CC</span><span class="color-role">Texto em glow</span></div>
+      </div>
+    </div>
+
+    <p style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--dk-mid);margin-bottom:.8rem;">Death Knight — Gelo arcano</p>
+    <div class="color-grid">
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#8AB4D8"></div>
+        <div class="color-info"><span class="color-name">DK Bright</span><span class="color-hex">#8AB4D8</span><span class="color-role">Links, hover</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#4A7FA8"></div>
+        <div class="color-info"><span class="color-name">DK Mid</span><span class="color-hex">#4A7FA8</span><span class="color-role">Eyebrows, labels</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#1E3D52"></div>
+        <div class="color-info"><span class="color-name">DK Dim</span><span class="color-hex">#1E3D52</span><span class="color-role">Bordas DK</span></div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#E8F4FF"></div>
+        <div class="color-info"><span class="color-name">Light Pure</span><span class="color-hex">#E8F4FF</span><span class="color-role">Texto frio</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPOGRAFIA -->
+  <div class="ds-section">
+    <div class="ds-section-title">Tipografia</div>
+
+    <div class="type-sample">
+      <p class="type-label">Display — Cinzel Decorative · Títulos principais</p>
+      <p style="font-family:'Cinzel Decorative',serif;font-size:2rem;color:var(--holy-bright);line-height:1.2;">Warcraft: O Caminho do Herói</p>
+    </div>
+    <div class="type-sample">
+      <p class="type-label">Heading — Cinzel · Seções, labels, botões</p>
+      <p style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--txt-bright);letter-spacing:.08em;">A Praga em Lordaeron</p>
+    </div>
+    <div class="type-sample">
+      <p class="type-label">Eyebrow — Cinzel · Metadados, slugs</p>
+      <p style="font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dk-mid);">Ato 1 · Episódio 3 · Andorhal</p>
+    </div>
+    <div class="type-sample">
+      <p class="type-label">Body — Crimson Pro · Narrativa, descrições</p>
+      <p style="font-family:'Crimson Pro',serif;font-size:1rem;color:var(--txt-mid);font-style:italic;line-height:1.8;">A estrada de terra que leva a Brill é larga e bem conservada — sinal de que esta cidade já foi próspera. Campos de trigo dourado se estendem dos dois lados.</p>
+    </div>
+    <div class="type-sample">
+      <p class="type-label">Code / Slug — Courier New · Chaves técnicas</p>
+      <p style="font-family:'Courier New',monospace;font-size:.82rem;color:var(--txt-dim);background:var(--deep);padding:.3rem .6rem;border-radius:3px;display:inline-block;">warned_villagers · brill_arrival · dark_path</p>
+    </div>
+  </div>
+
+  <!-- COMPONENTES -->
+  <div class="ds-section">
+    <div class="ds-section-title">Componentes</div>
+
+    <p class="type-label" style="margin-bottom:.6rem;">Botões</p>
+    <div class="comp-row" style="margin-bottom:1.4rem;">
+      <a class="btn-start" href="#">⚔ Ação principal</a>
+      <a class="btn-ghost" href="#">◈ Ação secundária</a>
+    </div>
+
+    <p class="type-label" style="margin-bottom:.6rem;">Tags / Pills</p>
+    <div class="comp-row" style="margin-bottom:1.4rem;">
+      <span class="card-tag tag-holy">Caminho da Luz</span>
+      <span class="card-tag tag-dk">Caminho Sombrio</span>
+    </div>
+
+    <p class="type-label" style="margin-bottom:.6rem;">Cards de cena</p>
+    <div class="comp-row" style="align-items:flex-start;">
+      <div class="card-demo holy">
+        <span class="card-tag tag-holy">Ato 1 · EP01</span>
+        <h4>Chegada a Brill</h4>
+        <p>A estrada que leva a Brill é larga e bem conservada. Campos dourados dos dois lados. Uma cidade viva — por enquanto.</p>
+      </div>
+      <div class="card-demo dk">
+        <span class="card-tag tag-dk">Ato 3B · EP08</span>
+        <h4>A Caverna de Frostmourne</h4>
+        <p>A caverna de gelo não aparece nos mapas. Arthas a encontra seguindo algo que ele descreve como um chamado.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEXTO NARRATIVO -->
+  <div class="ds-section">
+    <div class="ds-section-title">Texto narrativo</div>
+    <div class="narrative-demo">
+      <p>Quando a corrente cede e a porta abre, o cheiro vem primeiro — algo adocicado e podre ao mesmo tempo. Os quatro aldeões dentro estão vivos, mas mal. Olhos avermelhados, veias escurecidas nos pescoços, tremores intermitentes.</p>
+      <p style="margin-top:.8rem;">Ela consegue dizer três coisas: <em>"o grão,"</em> <em>"Kel'Thuzad,"</em> e <em>"fujam."</em> Depois para de tremer. Depois para de respirar.</p>
+    </div>
+  </div>
+
+  <!-- ESPAÇAMENTO -->
+  <div class="ds-section">
+    <div class="ds-section-title">Espaçamento</div>
+    <div class="spacing-row">
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:4px;"></div><p class="spacing-label">4px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:8px;"></div><p class="spacing-label">8px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:12px;"></div><p class="spacing-label">12px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:16px;"></div><p class="spacing-label">16px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:24px;"></div><p class="spacing-label">24px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:32px;"></div><p class="spacing-label">32px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:48px;"></div><p class="spacing-label">48px</p></div>
+      <div class="spacing-block"><div class="spacing-vis" style="width:32px;height:64px;"></div><p class="spacing-label">64px</p></div>
+    </div>
+  </div>
+
+  <!-- REGRAS -->
+  <div class="ds-section">
+    <div class="ds-section-title">Regras de uso</div>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <span class="rule-num">1</span>
+        <div><p class="rule-title">Holy para ações, DK para estado</p><p class="rule-desc">Botões primários e conquistas usam ouro. Caminho sombrio, cenas de Northrend e flags dark usam azul gelo.</p></div>
+      </div>
+      <div class="rule-card">
+        <span class="rule-num">2</span>
+        <div><p class="rule-title">Nunca branco puro</p><p class="rule-desc">O texto mais claro é #EDE8D8 — levemente aquecido. Branco puro quebra o clima de pedra antiga e névoa.</p></div>
+      </div>
+      <div class="rule-card">
+        <span class="rule-num">3</span>
+        <div><p class="rule-title">Cinzel para estrutura, Crimson para alma</p><p class="rule-desc">Labels, títulos e botões são sempre Cinzel. O texto narrativo é sempre Crimson Pro em itálico.</p></div>
+      </div>
+      <div class="rule-card">
+        <span class="rule-num">4</span>
+        <div><p class="rule-title">Bordas finas, raios mínimos</p><p class="rule-desc">Border-radius máximo de 6px em cards, 2px em botões. O estilo é de pedra lapidada, não de app moderno.</p></div>
+      </div>
+      <div class="rule-card">
+        <span class="rule-num">5</span>
+        <div><p class="rule-title">Glow com moderação</p><p class="rule-desc">Box-shadow com cor só em hover e em elementos de destaque. Glow constante só no título da home.</p></div>
+      </div>
+      <div class="rule-card">
+        <span class="rule-num">6</span>
+        <div><p class="rule-title">Contraste sempre presente</p><p class="rule-desc">Toda tela deve ter ao menos um elemento holy e um DK visíveis — mesmo que sutil. A dualidade é a identidade.</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+function showDesign() {
+  document.getElementById('home').classList.add('hidden');
+  document.getElementById('design-page').classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showHome() {
+  document.getElementById('home').classList.remove('hidden');
+  document.getElementById('design-page').classList.remove('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

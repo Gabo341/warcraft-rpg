@@ -1,121 +1,100 @@
 // =============================================================
-// Serviço HTTP do módulo player.
+// Comunicação HTTP com os endpoints de jogador da API.
 //
-// Responsabilidade: comunicar com a API do backend nos
-// endpoints relacionados ao jogador.
+// Responsabilidade: fazer as requisições para o backend e
+// retornar os dados para quem chamou (componentes).
+//
+// Este service NÃO guarda estado — só faz HTTP.
+// Quem guarda o jogador em memória é o game.service.ts.
 //
 // Endpoints consumidos:
-//   POST /players          → cria nova partida
-//   GET  /players/:id      → retorna estado do jogador
-//   GET  /players/:id/powers → retorna poderes desbloqueados
-//
-// Este serviço não conhece componentes — só fala com a API.
-// Quem chama este serviço são os componentes Angular.
+//   POST /players              → criar nova partida
+//   GET  /players/:id          → buscar estado do jogador
+//   GET  /players/:id/powers   → buscar poderes desbloqueados
 // =============================================================
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient }         from '@angular/common/http';
+import { Observable }         from 'rxjs';
+
+// Importa os tipos do game.service para manter consistência
+// em toda a aplicação — um único lugar define os contratos.
+import { Player, Power } from './game.service';
 
 // -------------------------------------------------------------
-// Tipos TypeScript
-// Espelham exatamente o que a API retorna — baseados no
-// player.service.ts do backend e no 001_schema.sql.
+// Tipos de entrada
+// Definem o que precisamos enviar para a API ao criar jogador.
+// Espelham o body esperado pelo POST /players do backend.
 // -------------------------------------------------------------
 
-// Dados enviados para criar uma nova partida
-// Espelho do CreatePlayerInput do backend
 export interface CreatePlayerInput {
-    name: string;
+    name:  string;
     class: 'warrior' | 'paladin' | 'rogue' | 'mage' | 'archer';
-    race: 'human' | 'dwarf' | 'night_elf';
-}
-
-// Dados retornados ao buscar um jogador
-// Espelho da interface Player do backend
-export interface Player {
-    id: string;
-    name: string;
-    class: string;
-    race: string;
-    current_scene_slug: string;
-    flags: Record<string, boolean>; // ex: { "warned_villagers": true }
-    ending: string | null;          // 'A', 'B' ou null se ainda não terminou
-    created_at: string;
-}
-
-// Um poder desbloqueado pelo jogador
-// Espelho da interface Power do backend
-export interface Power {
-    id: string;
-    name: string;
-    description: string;
-    class: string;
-    unlocked_at_act: number;
+    race:  'human' | 'dwarf' | 'night_elf';
 }
 
 // -------------------------------------------------------------
 // PlayerService
-// Injetável em qualquer componente Angular que precisar
-// criar, buscar ou listar poderes de um jogador.
 // -------------------------------------------------------------
-
 @Injectable({
-    // 'root' significa que o Angular cria uma única instância
-    // deste serviço para toda a aplicação — padrão singleton.
     providedIn: 'root'
 })
 export class PlayerService {
 
-    // URL base da API vinda do environment —
-    // nunca hardcodar 'http://localhost:3000' diretamente aqui
-    private apiUrl = environment.apiUrl;
+    // inject() é a forma moderna do Angular 14+ de injetar
+    // dependências — equivalente a receber no constructor,
+    // mas sem precisar declarar o constructor explicitamente.
+    private http = inject(HttpClient);
 
-    // HttpClient é injetado automaticamente pelo Angular.
-    // É ele quem faz as requisições HTTP para o backend.
-    constructor(private http: HttpClient) {}
+    // URL base da API do backend.
+    // Em desenvolvimento aponta para o Express rodando localmente.
+    // Em produção, trocaria para a URL do servidor real.
+    private readonly API_URL = 'http://localhost:3000';
 
-    // -------------------------------------------------------------
+    // -----------------------------------------------------------
     // createPlayer
-    // Chama POST /players para iniciar uma nova partida.
+    // Chama POST /players para criar uma nova partida no banco.
     //
-    // Recebe os dados do formulário de criação de personagem
-    // e retorna o jogador criado com seu ID único.
-    // -------------------------------------------------------------
+    // Retorna um Observable<Player>:
+    //   - Observable é como uma "promessa que pode emitir valores"
+    //   - O componente se "inscreve" (.subscribe) e recebe o
+    //     Player quando a requisição terminar
+    //
+    // Body enviado:
+    //   { name: "Aragorn", class: "paladin", race: "human" }
+    //
+    // Resposta esperada (201 Created):
+    //   { id, name, class, race, current_scene_slug, flags, ... }
+    // -----------------------------------------------------------
     createPlayer(input: CreatePlayerInput): Observable<Player> {
-        return this.http.post<Player>(
-            `${this.apiUrl}/players`,
-            input
-        );
+        return this.http.post<Player>(`${this.API_URL}/players`, input);
     }
 
-    // -------------------------------------------------------------
-    // getPlayer
-    // Chama GET /players/:id para buscar o estado atual
-    // do jogador — cena atual, flags acumuladas, etc.
+    // -----------------------------------------------------------
+    // getPlayerById
+    // Chama GET /players/:id para buscar o estado atual do jogador.
     //
-    // Usado pelo SceneComponent para saber em qual cena
-    // o jogador está ao carregar a aplicação.
-    // -------------------------------------------------------------
-    getPlayer(playerId: string): Observable<Player> {
-        return this.http.get<Player>(
-            `${this.apiUrl}/players/${playerId}`
-        );
+    // Usado ao recarregar a página: recuperamos o ID do
+    // localStorage e buscamos o jogador completo na API.
+    //
+    // Resposta esperada (200 OK):
+    //   { id, name, class, race, current_scene_slug, flags, ... }
+    // -----------------------------------------------------------
+    getPlayerById(playerId: string): Observable<Player> {
+        return this.http.get<Player>(`${this.API_URL}/players/${playerId}`);
     }
 
-    // -------------------------------------------------------------
+    // -----------------------------------------------------------
     // getPlayerPowers
     // Chama GET /players/:id/powers para buscar os poderes
     // já desbloqueados pelo jogador.
     //
-    // Usado pelo PowersPanelComponent para exibir o painel
-    // lateral de poderes na tela de cena.
-    // -------------------------------------------------------------
+    // O painel lateral da tela de cena exibe esses poderes.
+    //
+    // Resposta esperada (200 OK):
+    //   [ { id, name, description, class, unlocked_at_act }, ... ]
+    // -----------------------------------------------------------
     getPlayerPowers(playerId: string): Observable<Power[]> {
-        return this.http.get<Power[]>(
-            `${this.apiUrl}/players/${playerId}/powers`
-        );
+        return this.http.get<Power[]>(`${this.API_URL}/players/${playerId}/powers`);
     }
-
 }

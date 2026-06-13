@@ -35,7 +35,7 @@ app.use(express.json());
 // -------------------------------------------------------------
 
 // /players -> criar, buscar, atualizar, deletar jogador
-app.use('/player', playerRouter);
+app.use('/players', playerRouter);
 
 // /scenes -> buscar cena com choices filtradas
 app.use('/scenes', sceneRouter);

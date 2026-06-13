@@ -83,7 +83,7 @@ export async function processChoice(input: ProcessChoiceInput):
             [player.current_scene_slug]
         );
 
-        if (sceneResult.rows[0].id === choice.scene_id) {
+        if (sceneResult.rows[0].id !== choice.scene_id) {
             throw new Error('Esta escolha não pretence à cena atual do jogador.')
         }
 
@@ -115,7 +115,7 @@ export async function processChoice(input: ProcessChoiceInput):
 
         // 7. Busca a próxima cena para verificar o ato
         const nextSceneResult = await client.query(
-            'SELECT act FROM scene WHERE slug = $1',
+            'SELECT act FROM scenes WHERE slug = $1',
             [choice.next_scene_slug]
         );
 
@@ -124,7 +124,7 @@ export async function processChoice(input: ProcessChoiceInput):
         // 8. Desbloqueia o poder do novo ato (se mudou de ato)
         let powerUnlocked: string | null = null;
 
-        if (nextAct && nextAct !== player.current_scene_slug) {
+        if (nextAct && nextAct !== player.current_act) {
             const newPowerResult = await client.query(
                 `SELECT p.id, p.name
                  FROM powers p

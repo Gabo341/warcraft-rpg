@@ -78,8 +78,7 @@ export async function getSceneBySlug(
        AND (
          requires_flag IS NULL
          OR requires_flag = ANY ($2::text[])
-       )
-     ORDER BY sort_order`,
+       )`,
         [scene.id, Object.keys(playerFlags)]
     );
 

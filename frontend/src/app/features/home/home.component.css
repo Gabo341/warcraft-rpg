@@ -1,0 +1,184 @@
+/* =============================================================
+   home.component.css — Estilos exclusivos da tela inicial.
+
+   Variáveis CSS (--holy-bright, --abyss, etc.) vêm do
+   styles.css global — não precisam ser redefinidas aqui.
+   ============================================================= */
+
+/* ── Container principal da home ── */
+.home {
+    position:        relative;   /* necessário para posicionar os glows/runas */
+    min-height:      100vh;      /* ocupa a tela inteira */
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    justify-content: center;
+    padding:         2rem 1.5rem 4rem;
+    overflow:        hidden;     /* glows não vazam para fora da tela */
+
+    /* Grade de pedra sutil — textura de fundo */
+    background-image:
+            repeating-linear-gradient(
+                    0deg, transparent, transparent 59px,
+                    rgba(255,255,255,.018) 60px
+            ),
+            repeating-linear-gradient(
+                    90deg, transparent, transparent 59px,
+                    rgba(255,255,255,.018) 60px
+            );
+}
+
+/* Camadas de glow radial no fundo — holy (esq) e DK (dir) */
+.home::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+            radial-gradient(ellipse 70% 55% at 30% 50%, rgba(240,192,64,.06)   0%, transparent 60%),
+            radial-gradient(ellipse 70% 55% at 70% 50%, rgba(138,180,216,.06)  0%, transparent 60%),
+            radial-gradient(ellipse 100% 60% at 50% 0%,  rgba(9,8,16,.95)      0%, transparent 80%),
+            radial-gradient(ellipse 100% 40% at 50% 100%, rgba(9,8,16,.98)     0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Glows ambientais (elementos absolutos no HTML) ── */
+.ambient-glow {
+    position:      absolute;
+    width:         600px;
+    height:        600px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index:       0;
+    filter:        blur(120px);
+    opacity:       .12;
+}
+.ambient-holy {
+    background: var(--holy-bright);
+    top:        50%;
+    left:       20%;
+    transform:  translate(-50%, -50%);
+}
+.ambient-dk {
+    background: var(--dk-bright);
+    top:        50%;
+    left:       80%;
+    transform:  translate(-50%, -50%);
+}
+
+/* ── Runas decorativas nos cantos ── */
+.corner-rune {
+    position:       absolute;
+    font-family:    'Cinzel Decorative', serif;
+    font-size:      4rem;
+    opacity:        .04;       /* quase invisível — só textura */
+    pointer-events: none;
+    user-select:    none;
+    z-index:        0;
+}
+.corner-rune.tl { top: 1.5rem;    left: 2rem;  color: var(--holy-bright); }
+.corner-rune.br { bottom: 1.5rem; right: 2rem; color: var(--dk-bright); transform: scaleX(-1); }
+
+/* ── Bloco central de conteúdo ── */
+.home-inner {
+    position:   relative;
+    z-index:    1;           /* fica acima dos glows e grade */
+    text-align: center;
+    max-width:  700px;
+    width:      100%;
+}
+
+/* Animação de entrada: cada filho do home-inner sobe com delay */
+.home-inner > * {
+    animation: fadeUp .6s var(--ease) both;
+}
+.home-inner > *:nth-child(1) { animation-delay: .1s; }
+.home-inner > *:nth-child(2) { animation-delay: .2s; }
+.home-inner > *:nth-child(3) { animation-delay: .3s; }
+.home-inner > *:nth-child(4) { animation-delay: .4s; }
+.home-inner > *:nth-child(5) { animation-delay: .5s; }
+.home-inner > *:nth-child(6) { animation-delay: .6s; }
+.home-inner > *:nth-child(7) { animation-delay: .7s; }
+
+@media (prefers-reduced-motion: reduce) {
+    .home-inner > * { animation: none; }
+}
+
+/* ── Título principal com gradiente holy → dk ── */
+.home-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size:   clamp(2rem, 6vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: .5rem;
+
+    /* Gradiente no texto — técnica de background-clip */
+    background: linear-gradient(
+            135deg,
+            var(--holy-bright) 0%,
+            var(--light-warm)  30%,
+            var(--dk-bright)   70%,
+            var(--holy-bright) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip:         text;
+    filter: drop-shadow(0 0 24px rgba(240,192,64,.3));
+}
+
+/* ── Subtítulo ── */
+.home-subtitle {
+    font-family:    'Cinzel', serif;
+    font-size:      clamp(.8rem, 2vw, 1rem);
+    letter-spacing: .2em;
+    color:          var(--dk-mid);
+    text-transform: uppercase;
+    margin-bottom:  2.4rem;
+}
+
+/* ── Texto de lore ── */
+.lore {
+    font-size:    1rem;
+    color:        var(--txt-mid);
+    font-style:   italic;
+    line-height:  1.8;
+    margin-bottom: 2.8rem;
+    max-width:    520px;
+    margin-left:  auto;
+    margin-right: auto;
+}
+.lore em {
+    font-style: normal;
+    color:      var(--txt-bright);
+}
+
+/* ── Botões ── */
+.home-actions {
+    display:     flex;
+    gap:         1rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap:   wrap; /* quebra em mobile */
+}
+
+/* ── Aviso inferior ── */
+.home-warning {
+    margin-top:     2rem;
+    font-family:    'Cinzel', serif;
+    font-size:      .6rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--txt-dim);
+}
+
+/* ── Responsividade ── */
+@media (max-width: 480px) {
+    .home-actions {
+        flex-direction: column; /* botões empilhados no celular */
+    }
+    .btn-primary,
+    .btn-ghost {
+        width: 100%;
+        justify-content: center;
+    }
+}

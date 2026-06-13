@@ -1,10 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- ============================================================
+  home.component.html — Template da tela inicial.
 
-</body>
-</html>
+  Estrutura:
+    - Glows ambientais (decoração de fundo)
+    - Runas nos cantos (decoração sutil)
+    - Bloco central: ornamento, título, lore, botões
+  ============================================================ -->
+
+<section class="home">
+
+    <!-- Glows ambientais: holy (esquerda) e DK (direita) -->
+    <div class="ambient-glow ambient-holy"></div>
+    <div class="ambient-glow ambient-dk"></div>
+
+    <!-- Runas decorativas nos cantos, quase invisíveis (opacity .04) -->
+    <span class="corner-rune tl">✦</span>
+    <span class="corner-rune br">✦</span>
+
+    <!-- Bloco central com todo o conteúdo da home -->
+    <div class="home-inner">
+
+        <!-- Ornamento: linha — gema — linha (separador decorativo) -->
+        <div class="ornament">
+            <span class="ornament-line"></span>
+            <span class="ornament-gem"></span>
+            <span class="ornament-line right"></span>
+        </div>
+
+        <!-- Eyebrow: texto pequeno acima do título principal -->
+        <p class="eyebrow">Reino de Lordaeron · Anno Domini III</p>
+
+        <!-- Título principal com gradiente holy → dk no texto -->
+        <h1 class="home-title">
+            Warcraft<br>O Caminho do Herói
+        </h1>
+
+        <!-- Subtítulo -->
+        <p class="home-subtitle">Um RPG de texto interativo</p>
+
+        <!-- Barra de dualidade: divide holy (ouro) e DK (gelo) -->
+        <div class="duality-bar">
+            <div class="duality-holy"></div>
+            <div class="duality-dk"></div>
+        </div>
+
+        <!-- Texto de lore: apresentação narrativa do jogo -->
+        <p class="lore">
+            A praga avança pelo norte. <em>Arthas Menethil</em> parte para investigar.<br>
+            Você é o soldado ao lado dele — e cada escolha que fizer<br>
+            moldará o destino de um reino.
+        </p>
+
+        <!-- Botões de ação -->
+        <div class="home-actions">
+
+            <!-- Botão principal: sempre visível -->
+            <button class="btn-primary" (click)="novaPartida()">
+                ⚔ Começar aventura
+            </button>
+
+            <!--
+              Botão "Continuar" — só aparece se já houver partida salva.
+              *ngIf é uma diretiva Angular: renderiza o elemento apenas
+              quando a condição for verdadeira.
+            -->
+            <button
+                    *ngIf="temPartidaSalva"
+                    class="btn-ghost"
+                    (click)="continuarPartida()"
+            >
+                ◈ Continuar partida
+            </button>
+
+        </div>
+
+        <!-- Aviso de lore abaixo dos botões -->
+        <p class="home-warning">
+            Suas escolhas são permanentes · Lordaeron não esquece
+        </p>
+
+    </div>
+</section>

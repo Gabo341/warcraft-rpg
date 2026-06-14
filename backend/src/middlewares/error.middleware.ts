@@ -10,6 +10,13 @@
 // =============================================================
 
 import { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+
+export const corsMiddleware = cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Cache-Control']
+});
 
 export function errorMiddleware(
     err: Error,
@@ -26,4 +33,6 @@ export function errorMiddleware(
         error: 'Erro interno do servidor.',
         message: err.message
     });
+
+
 }

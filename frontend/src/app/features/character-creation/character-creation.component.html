@@ -9,245 +9,243 @@
     4. Grid de classes (5 cards clicáveis)
     5. Rodapé (erro + botão de submit)
 
-  Diretivas Angular usadas:
-    *ngFor      → repete elementos para cada item de um array
-    *ngIf       → renderiza elemento somente se condição for true
-    [ngClass]   → aplica classe CSS condicionalmente
-    [(ngModel)] → two-way binding: sincroniza input com this.nome
-    (click)     → escuta clique e chama método do componente
-    [disabled]  → desabilita elemento quando condição for true
+  Sintaxe Angular 22:
+    @if(){}       → substitui *ngIf
+    @for(){}      → substitui *ngFor
+    [ngClass]     → aplica classes CSS condicionalmente
+    [(ngModel)]   → two-way binding com this.nome
+    (click)       → escuta clique e chama método do componente
+    [disabled]    → desabilita elemento quando condição for true
+    routerLink    → navegação entre rotas sem recarregar a página
 =========================================================== -->
 
 <div class="cc-page">
 
-    <!-- ── CABEÇALHO ─────────────────────────────────────────── -->
-    <div class="cc-header">
+  <!-- ── CABEÇALHO ─────────────────────────────────────────── -->
+  <div class="cc-header">
 
-        <!-- Ornamento decorativo: linha — gema — linha -->
-        <div class="ornament" style="margin-bottom: 1.2rem;">
-            <span class="ornament-line"></span>
-            <span class="ornament-gem"></span>
-            <span class="ornament-line right"></span>
-        </div>
+    <div class="ornament" style="margin-bottom: 1.2rem;">
+      <span class="ornament-line"></span>
+      <span class="ornament-gem"></span>
+      <span class="ornament-line right"></span>
+    </div>
 
-        <p class="eyebrow">Forje seu destino</p>
-        <h1 class="cc-title">Criar Personagem</h1>
-        <p class="cc-subtitle">
-            Sua classe e raça moldam como o mundo te enxerga —<br>
-            mas são suas escolhas que determinam quem você é.
+    <p class="eyebrow">Forje seu destino</p>
+    <h1 class="cc-title">Criar Personagem</h1>
+    <p class="cc-subtitle">
+      Sua classe e raça moldam como o mundo te enxerga —<br>
+      mas são suas escolhas que determinam quem você é.
+    </p>
+
+  </div>
+
+  <!-- ── FORMULÁRIO ────────────────────────────────────────── -->
+  <div class="cc-form">
+
+    <!-- ── SEÇÃO 1: NOME ──────────────────────────────────── -->
+    <div class="form-section">
+
+      <p class="section-label">
+        <span class="section-num">I</span> Nome do personagem
+      </p>
+
+      <!--
+        [(ngModel)] = two-way data binding:
+          - Angular lê this.nome e coloca no input
+          - Quando o usuário digita, Angular atualiza this.nome
+        O FormsModule no .ts habilita este recurso.
+      -->
+      <input
+        type="text"
+        class="nome-input"
+        [(ngModel)]="nome"
+        placeholder="Como seu personagem é chamado?"
+        maxlength="100"
+        autocomplete="off"
+      />
+
+      <!--
+        @if é a sintaxe moderna do Angular 17+ para condicionais.
+        Substitui o *ngIf — não precisa de CommonModule importado.
+        Só renderiza quando há algo digitado no campo.
+      -->
+      @if (nome.length > 0) {
+        <p class="input-hint">
+          {{ nome.trim().length }} caractere(s)
+          @if (nome.trim().length < 2) {
+            <span class="hint-warn">— mínimo 2</span>
+          }
         </p>
+      }
 
     </div>
 
-    <!-- ── FORMULÁRIO ────────────────────────────────────────── -->
-    <div class="cc-form">
+    <!-- ── SEÇÃO 2: RAÇA ──────────────────────────────────── -->
+    <div class="form-section">
 
-        <!-- ── SEÇÃO 1: NOME ──────────────────────────────────── -->
-        <div class="form-section">
+      <p class="section-label">
+        <span class="section-num">II</span> Escolha sua raça
+      </p>
 
-            <p class="section-label">
-                <span class="section-num">I</span> Nome do personagem
-            </p>
+      <p class="section-hint">
+        A raça define quais classes estão disponíveis para você.
+      </p>
 
-            <!--
-              [(ngModel)] = two-way data binding:
-                - Angular lê this.nome e coloca no input
-                - Quando o usuário digita, Angular atualiza this.nome
-              O FormsModule no .ts habilita este recurso.
-            -->
-            <input
-                    type="text"
-                    class="nome-input"
-                    [(ngModel)]="nome"
-                    placeholder="Como seu personagem é chamado?"
-                    maxlength="100"
-                    autocomplete="off"
-            />
+      <!--
+        @for é a sintaxe moderna do Angular 17+ para laços.
+        Substitui o *ngFor — não precisa de CommonModule importado.
+        'track raca.valor' é obrigatório no Angular 17+ para
+        que o Angular identifique cada item de forma única e
+        atualize só o que mudou (performance).
+      -->
+      <div class="race-grid">
+        @for (raca of racas; track raca.valor) {
+          <div
+            class="race-card"
+            [class]="raca.valor"
+            [ngClass]="{ 'selecionado': racaSelecionada === raca.valor }"
+            (click)="selecionarRaca(raca.valor)"
+            [attr.aria-label]="'Selecionar raça ' + raca.nome"
+            role="button"
+          >
+            <div class="card-accent-line"></div>
 
-            <!-- Contador de caracteres — aparece quando há algo digitado -->
-            <p class="input-hint" *ngIf="nome.length > 0">
-                {{ nome.trim().length }} caractere(s)
-                <span *ngIf="nome.trim().length < 2" class="hint-warn">
-          — mínimo 2
-        </span>
-            </p>
+            <div class="race-card-body">
+              <p class="race-name">{{ raca.nome }}</p>
+              <p class="race-desc">{{ raca.descricao }}</p>
 
-        </div>
-
-        <!-- ── SEÇÃO 2: RAÇA ──────────────────────────────────── -->
-        <div class="form-section">
-
-            <p class="section-label">
-                <span class="section-num">II</span> Escolha sua raça
-            </p>
-
-            <p class="section-hint">
-                A raça define quais classes estão disponíveis para você.
-            </p>
-
-            <!--
-              *ngFor="let raca of racas" → Angular repete este bloco
-              uma vez para cada item do array this.racas (definido no .ts).
-              A variável 'raca' representa o item atual da iteração.
-            -->
-            <div class="race-grid">
-                <div
-                        *ngFor="let raca of racas"
-                        class="race-card"
-                        [class]="raca.valor"
-                        [ngClass]="{
-            'selecionado': racaSelecionada === raca.valor
-          }"
-                        (click)="selecionarRaca(raca.valor)"
-                        [attr.aria-label]="'Selecionar raça ' + raca.nome"
-                        role="button"
-                >
-                    <!-- Linha colorida no topo — cor varia por raça via CSS -->
-                    <div class="card-accent-line"></div>
-
-                    <div class="race-card-body">
-                        <p class="race-name">{{ raca.nome }}</p>
-                        <p class="race-desc">{{ raca.descricao }}</p>
-
-                        <!-- Pills das classes permitidas para esta raça -->
-                        <div class="race-classes">
-              <span
-                      *ngFor="let c of raca.classesPermitidas"
-                      class="class-pill"
-                      [class]="'pill-' + c"
-              >
-                {{ c }}
-              </span>
-                        </div>
-                    </div>
-
-                    <!-- Indicador visual de seleção (checkmark) -->
-                    <div class="selected-badge" *ngIf="racaSelecionada === raca.valor">
-                        ✦
-                    </div>
-
-                </div>
+              <div class="race-classes">
+                @for (c of raca.classesPermitidas; track c) {
+                  <span class="class-pill" [class]="'pill-' + c">
+                                        {{ c }}
+                                    </span>
+                }
+              </div>
             </div>
 
-        </div>
+            @if (racaSelecionada === raca.valor) {
+              <div class="selected-badge">✦</div>
+            }
 
-        <!-- ── SEÇÃO 3: CLASSE ────────────────────────────────── -->
-        <div class="form-section">
-
-            <p class="section-label">
-                <span class="section-num">III</span> Escolha sua classe
-            </p>
-
-            <p class="section-hint" *ngIf="!racaSelecionada">
-                Selecione uma raça primeiro para ver as classes disponíveis.
-            </p>
-            <p class="section-hint" *ngIf="racaSelecionada">
-                Classes acinzentadas não estão disponíveis para a raça escolhida.
-            </p>
-
-            <!--
-              Grid de 5 cards de classe.
-              [ngClass] aplica múltiplas classes CSS condicionalmente:
-                'selecionado'  → quando esta é a classe escolhida
-                'desabilitado' → quando incompatível com a raça atual
-            -->
-            <div class="classes-grid">
-                <div
-                        *ngFor="let classe of classes"
-                        class="class-card"
-                        [ngClass]="{
-            'selecionado':  classeSelecionada === classe.valor,
-            'desabilitado': classeEstaDesabilitada(classe.valor)
-          }"
-                        (click)="selecionarClasse(classe.valor)"
-                        [attr.aria-label]="'Selecionar classe ' + classe.nome"
-                        [attr.aria-disabled]="classeEstaDesabilitada(classe.valor)"
-                        role="button"
-                >
-                    <!--
-                      [style.--accent] passa a cor da classe como variável CSS
-                      inline, permitindo que o CSS do card use var(--accent)
-                      sem precisar de uma classe para cada cor.
-                    -->
-                    <div
-                            class="class-accent-line"
-                            [style.background]="classe.cor"
-                    ></div>
-
-                    <div class="class-card-body">
-
-                        <p class="class-name" [style.color]="classe.corLt">
-                            {{ classe.nome }}
-                        </p>
-
-                        <p class="class-races">{{ classe.racas }}</p>
-
-                        <p class="class-flavor">{{ classe.flavor }}</p>
-
-                    </div>
-
-                    <!-- Badge de selecionado -->
-                    <div
-                            class="selected-badge"
-                            *ngIf="classeSelecionada === classe.valor"
-                    >
-                        ✦
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-        <!-- ── RODAPÉ: ERRO + BOTÃO ──────────────────────────── -->
-        <div class="form-footer">
-
-            <!--
-              Mensagem de erro da API — só aparece se this.erro !== null.
-              O operador ? (optional chaining) no template é seguro
-              aqui porque já checamos com *ngIf.
-            -->
-            <div class="erro-box" *ngIf="erro">
-                <span class="erro-icone">✕</span>
-                {{ erro }}
-            </div>
-
-            <!--
-              Resumo do personagem — aparece quando tudo está preenchido,
-              antes de confirmar. Dá feedback visual ao jogador.
-            -->
-            <div class="resumo" *ngIf="formularioValido">
-                <span class="resumo-item">{{ nome.trim() }}</span>
-                <span class="resumo-sep">·</span>
-                <span class="resumo-item">{{ classeSelecionada }}</span>
-                <span class="resumo-sep">·</span>
-                <span class="resumo-item">{{ racaSelecionada }}</span>
-            </div>
-
-            <!--
-              Botão de submit:
-                [disabled] → desabilita quando form inválido ou carregando
-                (click)    → chama criarPersonagem() no .ts
-            -->
-            <button
-                    class="btn-primary btn-criar"
-                    [disabled]="!formularioValido || carregando"
-                    (click)="criarPersonagem()"
-            >
-                <!-- Alterna entre loading e texto normal -->
-                <span *ngIf="!carregando">⚔ Começar aventura</span>
-                <span *ngIf="carregando" class="loading-text">
-          <span class="spinner"></span>
-          Criando personagem...
-        </span>
-            </button>
-
-            <!-- Link para voltar à home -->
-            <a class="link-voltar" routerLink="/">
-                ← Voltar ao início
-            </a>
-
-        </div>
+          </div>
+        }
+      </div>
 
     </div>
+
+    <!-- ── SEÇÃO 3: CLASSE ────────────────────────────────── -->
+    <div class="form-section">
+
+      <p class="section-label">
+        <span class="section-num">III</span> Escolha sua classe
+      </p>
+
+      @if (!racaSelecionada) {
+        <p class="section-hint">
+          Selecione uma raça primeiro para ver as classes disponíveis.
+        </p>
+      }
+
+      @if (racaSelecionada) {
+        <p class="section-hint">
+          Classes acinzentadas não estão disponíveis para a raça escolhida.
+        </p>
+      }
+
+      <div class="classes-grid">
+        @for (classe of classes; track classe.valor) {
+          <div
+            class="class-card"
+            [ngClass]="{
+                            'selecionado':  classeSelecionada === classe.valor,
+                            'desabilitado': classeEstaDesabilitada(classe.valor)
+                        }"
+            (click)="selecionarClasse(classe.valor)"
+            [attr.aria-label]="'Selecionar classe ' + classe.nome"
+            [attr.aria-disabled]="classeEstaDesabilitada(classe.valor)"
+            role="button"
+          >
+            <div
+              class="class-accent-line"
+              [style.background]="classe.cor"
+            ></div>
+
+            <div class="class-card-body">
+              <p class="class-name" [style.color]="classe.corLt">
+                {{ classe.nome }}
+              </p>
+              <p class="class-races">{{ classe.racas }}</p>
+              <p class="class-flavor">{{ classe.flavor }}</p>
+            </div>
+
+            @if (classeSelecionada === classe.valor) {
+              <div class="selected-badge">✦</div>
+            }
+
+          </div>
+        }
+      </div>
+
+    </div>
+
+    <!-- ── RODAPÉ: ERRO + BOTÃO ──────────────────────────── -->
+    <div class="form-footer">
+
+      <!--
+        Mensagem de erro da API.
+        Só aparece quando this.erro não é null.
+      -->
+      @if (erro) {
+        <div class="erro-box">
+          <span class="erro-icone">✕</span>
+          {{ erro }}
+        </div>
+      }
+
+      <!--
+        Resumo do personagem — aparece quando tudo está preenchido.
+        Dá feedback visual antes de confirmar.
+      -->
+      @if (formularioValido) {
+        <div class="resumo">
+          <span class="resumo-item">{{ nome.trim() }}</span>
+          <span class="resumo-sep">·</span>
+          <span class="resumo-item">{{ classeSelecionada }}</span>
+          <span class="resumo-sep">·</span>
+          <span class="resumo-item">{{ racaSelecionada }}</span>
+        </div>
+      }
+
+      <!--
+        Botão de submit.
+        [disabled] → desabilita quando form inválido ou carregando.
+        (click)    → chama criarPersonagem() no .ts.
+      -->
+      <button
+        class="btn-primary btn-criar"
+        [disabled]="!formularioValido || carregando"
+        (click)="criarPersonagem()"
+      >
+        @if (!carregando) {
+          <span>⚔ Começar aventura</span>
+        }
+        @if (carregando) {
+          <span class="loading-text">
+                        <span class="spinner"></span>
+                        Criando personagem...
+                    </span>
+        }
+      </button>
+
+      <!--
+        routerLink navega para / sem recarregar a página.
+        RouterLink precisa estar importado no .ts do componente.
+      -->
+      <a class="link-voltar" routerLink="/">
+        ← Voltar ao início
+      </a>
+
+    </div>
+
+  </div>
 </div>

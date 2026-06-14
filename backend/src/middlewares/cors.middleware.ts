@@ -9,16 +9,10 @@
 //
 // Este middleware libera o acesso apenas para o Angular.
 // =============================================================
-
 import cors from 'cors';
 
 export const corsMiddleware = cors({
-    // Permite requisições apenas do Angular rodando localmente
     origin: 'http://localhost:4200',
-
-    // Métodos HTTP permitidos
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-
-    // Permite que o Angular envie o Content-Type: application/json
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type', 'Cache-Control']
 });

@@ -1,0 +1,481 @@
+/* =============================================================
+   character-creation.component.css
+   Estilos exclusivos da tela de criação de personagem.
+
+   Pré-requisito: styles.css global define as variáveis CSS
+   (--holy-bright, --abyss, --dk-bright, --txt-mid, etc.)
+   e as classes utilitárias (.ornament, .eyebrow, .btn-primary).
+
+   Estrutura coberta aqui:
+     .cc-page         → container geral da tela
+     .cc-header       → bloco de título
+     .cc-form         → container do formulário
+     .form-section    → cada bloco (nome / raça / classe)
+     .race-grid       → grid de 3 cards de raça
+     .race-card       → card individual de raça
+     .classes-grid    → grid de 5 cards de classe
+     .class-card      → card individual de classe
+     .form-footer     → área de erro + resumo + botão
+   ============================================================= */
+
+
+/* ── PÁGINA ─────────────────────────────────────────────────── */
+
+.cc-page {
+    min-height:  100vh;
+    display:     flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* Gradiente de fundo: vazio no topo, profundidade no centro */
+    background:
+            radial-gradient(ellipse 80% 40% at 50% 0%, rgba(201,168,76,.04) 0%, transparent 60%),
+            var(--abyss);
+
+    padding: 3rem 1.5rem 5rem;
+    overflow-x: hidden;
+}
+
+
+/* ── CABEÇALHO ───────────────────────────────────────────────── */
+
+.cc-header {
+    text-align: center;
+    max-width:  640px;
+    width:      100%;
+    margin-bottom: 2.5rem;
+}
+
+/* Linha separadora abaixo do cabeçalho */
+.cc-header::after {
+    content: '';
+    display: block;
+    width:   50%;
+    height:  1px;
+    background: linear-gradient(90deg, transparent, var(--holy-dim), transparent);
+    margin: 1.5rem auto 0;
+}
+
+/* Título da tela */
+.cc-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size:   clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color:       var(--holy-bright);
+    line-height: 1.2;
+    margin-bottom: .4rem;
+    filter: drop-shadow(0 0 20px rgba(240,192,64,.25));
+}
+
+/* Texto explicativo abaixo do título */
+.cc-subtitle {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   1rem;
+    color:       var(--txt-mid);
+    font-style:  italic;
+    line-height: 1.65;
+    margin-top:  .5rem;
+}
+
+
+/* ── FORMULÁRIO (container das seções) ───────────────────────── */
+
+.cc-form {
+    width:     100%;
+    max-width: 800px;
+    display:   flex;
+    flex-direction: column;
+    gap:       2.4rem; /* espaço entre as seções nome / raça / classe */
+}
+
+
+/* ── SEÇÃO GENÉRICA ──────────────────────────────────────────── */
+
+.form-section {
+    display:        flex;
+    flex-direction: column;
+    gap:            .8rem;
+}
+
+/* Rótulo de cada seção: número romano + texto */
+.section-label {
+    display:        flex;
+    align-items:    center;
+    gap:            .7rem;
+    font-family:    'Cinzel', serif;
+    font-size:      .7rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--txt-mid);
+}
+
+/* Número romano dentro do label */
+.section-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size:   1rem;
+    color:       var(--holy-dim);
+}
+
+/* Texto de dica abaixo do label */
+.section-hint {
+    font-size:   .88rem;
+    color:       var(--txt-dim);
+    font-style:  italic;
+    margin-top: -.2rem;
+}
+
+
+/* ── INPUT DE NOME ───────────────────────────────────────────── */
+
+.nome-input {
+    width:       100%;
+    background:  var(--deep);
+    border:      1px solid var(--rim);
+    border-radius: 4px;
+    color:       var(--txt-bright);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   1.1rem;
+    padding:     .75rem 1rem;
+    outline:     none;
+    transition:  border-color .2s, box-shadow .2s;
+}
+
+.nome-input::placeholder {
+    color:      var(--txt-dim);
+    font-style: italic;
+}
+
+/* Estado focus: borda holy sutil */
+.nome-input:focus {
+    border-color: var(--holy-dim);
+    box-shadow:   0 0 0 3px rgba(240,192,64,.08);
+}
+
+/* Contador de caracteres abaixo do input */
+.input-hint {
+    font-size:  .82rem;
+    color:      var(--txt-dim);
+    font-style: italic;
+}
+
+/* Aviso de mínimo de caracteres */
+.hint-warn {
+    color: var(--blood-lt);
+}
+
+
+/* ── GRID DE RAÇAS ───────────────────────────────────────────── */
+
+.race-grid {
+    display:               grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap:                   .9rem;
+}
+
+
+/* ── CARD DE RAÇA ────────────────────────────────────────────── */
+
+.race-card {
+    background:    var(--deep);
+    border:        1px solid var(--rim);
+    border-radius: 6px;
+    overflow:      hidden;
+    cursor:        pointer;
+    position:      relative;
+
+    /* Transições de hover e seleção */
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+
+.race-card:hover {
+    transform:    translateY(-2px);
+    border-color: var(--holy-dim);
+    box-shadow:   0 6px 24px rgba(0,0,0,.35);
+}
+
+/* Estado selecionado: borda holy brilhante */
+.race-card.selecionado {
+    border-color: var(--holy-bright);
+    box-shadow:   0 0 0 1px var(--holy-bright),
+    0 6px 28px rgba(240,192,64,.2);
+}
+
+/* Linha colorida no topo de cada card de raça */
+.race-card .card-accent-line {
+    height: 3px;
+    width:  100%;
+}
+
+/* Cores da linha por raça (o .ts adiciona a classe via [class]="raca.valor") */
+.race-card.human     .card-accent-line { background: linear-gradient(90deg, var(--holy-dim), var(--holy-bright), var(--holy-dim)); }
+.race-card.dwarf     .card-accent-line { background: linear-gradient(90deg, #7A3010, #C46030, #7A3010); }
+.race-card.night_elf .card-accent-line { background: linear-gradient(90deg, var(--dk-dim), var(--dk-bright), var(--dk-dim)); }
+
+/* Corpo do card de raça */
+.race-card-body {
+    padding: 1rem 1.1rem 1.2rem;
+}
+
+.race-name {
+    font-family:    'Cinzel', serif;
+    font-size:      .95rem;
+    color:          var(--txt-bright);
+    margin-bottom:  .3rem;
+}
+
+.race-desc {
+    font-size:    .82rem;
+    color:        var(--txt-dim);
+    font-style:   italic;
+    line-height:  1.4;
+    margin-bottom: .7rem;
+}
+
+/* Pills das classes permitidas pela raça */
+.race-classes {
+    display:   flex;
+    flex-wrap: wrap;
+    gap:       .35rem;
+}
+
+.class-pill {
+    font-family:    'Cinzel', serif;
+    font-size:      .58rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding:        .15rem .55rem;
+    border-radius:  999px;
+    border:         1px solid;
+}
+
+/* Cor de cada pill por classe */
+.pill-warrior { color: #F1948A; border-color: #B03A2E; background: rgba(176,58,46,.15); }
+.pill-paladin { color: #F9E79F; border-color: #D4AC0D; background: rgba(212,172,13,.15); }
+.pill-mage    { color: #85C1E9; border-color: #1A5276; background: rgba(26,82,118,.15); }
+.pill-rogue   { color: #C39BD3; border-color: #6C3483; background: rgba(108,52,131,.15); }
+.pill-archer  { color: #82E0AA; border-color: #1E8449; background: rgba(30,132,73,.15); }
+
+
+/* ── GRID DE CLASSES ─────────────────────────────────────────── */
+
+.classes-grid {
+    display:               grid;
+    /* 2 colunas em telas médias; 1 em mobile */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap:                   .9rem;
+}
+
+
+/* ── CARD DE CLASSE ──────────────────────────────────────────── */
+
+.class-card {
+    background:    var(--deep);
+    border:        1px solid var(--rim);
+    border-radius: 6px;
+    overflow:      hidden;
+    cursor:        pointer;
+    position:      relative;
+
+    transition: border-color .25s, transform .25s, box-shadow .25s, opacity .2s;
+}
+
+.class-card:hover:not(.desabilitado) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0,0,0,.35);
+}
+
+/* Estado selecionado: mesma ideia do card de raça */
+.class-card.selecionado {
+    box-shadow:   0 0 0 1px var(--holy-bright),
+    0 6px 28px rgba(240,192,64,.2);
+    border-color: var(--holy-bright);
+}
+
+/* Estado desabilitado: escurecido e sem cursor */
+.class-card.desabilitado {
+    opacity: .35;
+    cursor:  not-allowed;
+    filter:  grayscale(.6);
+}
+
+/* Linha colorida no topo — cor vem diretamente do [style.background] no template */
+.class-accent-line {
+    height: 3px;
+    width:  100%;
+}
+
+/* Corpo do card de classe */
+.class-card-body {
+    padding: 1rem 1.1rem 1.2rem;
+}
+
+.class-name {
+    font-family:   'Cinzel', serif;
+    font-size:     .95rem;
+    /* cor vem do [style.color] no template, então não definimos aqui */
+    margin-bottom: .15rem;
+}
+
+/* Raças compatíveis com a classe */
+.class-races {
+    font-family:    'Cinzel', serif;
+    font-size:      .6rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color:          var(--txt-dim);
+    margin-bottom:  .55rem;
+}
+
+/* Texto de flavor da classe */
+.class-flavor {
+    font-size:   .85rem;
+    color:       var(--txt-mid);
+    line-height: 1.5;
+    font-style:  italic;
+}
+
+
+/* ── BADGE DE SELECIONADO (reaproveita nos dois tipos de card) ── */
+
+/*
+  Aparece no canto superior direito quando o card está selecionado.
+  O *ngIf no template já controla quando renderizar.
+*/
+.selected-badge {
+    position:  absolute;
+    top:       .6rem;
+    right:     .7rem;
+    font-size: .9rem;
+    color:     var(--holy-bright);
+
+    /* Glow sutil para destacar */
+    filter: drop-shadow(0 0 6px rgba(240,192,64,.7));
+}
+
+
+/* ── RODAPÉ DO FORMULÁRIO ────────────────────────────────────── */
+
+.form-footer {
+    display:        flex;
+    flex-direction: column;
+    align-items:    center;
+    gap:            1rem;
+    padding-top:    .5rem;
+}
+
+/* Caixa de erro da API */
+.erro-box {
+    width:         100%;
+    max-width:     460px;
+    background:    rgba(139,26,26,.2);
+    border:        1px solid var(--blood);
+    border-radius: 4px;
+    padding:       .7rem 1rem;
+    font-size:     .9rem;
+    color:         var(--blood-lt);
+    display:       flex;
+    gap:           .6rem;
+    align-items:   center;
+}
+
+.erro-icone {
+    font-size: .8rem;
+    flex-shrink: 0;
+}
+
+/* Resumo do personagem antes de confirmar */
+.resumo {
+    display:        flex;
+    align-items:    center;
+    gap:            .5rem;
+    font-family:    'Cinzel', serif;
+    font-size:      .72rem;
+    letter-spacing: .1em;
+    color:          var(--txt-mid);
+    text-transform: uppercase;
+}
+
+.resumo-item {
+    color: var(--txt-bright);
+}
+
+.resumo-sep {
+    color: var(--holy-dim);
+}
+
+/* Botão de criar — herda .btn-primary do global, mas ajustamos largura */
+.btn-criar {
+    min-width: 240px;
+    font-size: .9rem;
+    padding:   .9rem 2.4rem;
+}
+
+/* Estado desabilitado do botão */
+.btn-criar:disabled {
+    opacity: .45;
+    cursor:  not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Texto + spinner enquanto carrega */
+.loading-text {
+    display:     flex;
+    align-items: center;
+    gap:         .6rem;
+}
+
+/*
+  Spinner: div vazia que gira via animação CSS.
+  O Angular já renderiza a <span class="spinner"> via *ngIf.
+*/
+.spinner {
+    display:       inline-block;
+    width:         14px;
+    height:        14px;
+    border:        2px solid rgba(0,0,0,.2);
+    border-top-color: rgba(0,0,0,.7);
+    border-radius: 50%;
+    animation:     spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Link para voltar à home */
+.link-voltar {
+    font-family:    'Cinzel', serif;
+    font-size:      .68rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color:          var(--dk-mid);
+    text-decoration: none;
+    transition:     color .2s;
+}
+
+.link-voltar:hover {
+    color: var(--dk-bright);
+}
+
+
+/* ── RESPONSIVIDADE ──────────────────────────────────────────── */
+
+/* Tablet: une o grid de classes em 2 colunas fixas */
+@media (max-width: 640px) {
+    .classes-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Mobile: tudo em coluna única */
+@media (max-width: 400px) {
+    .race-grid,
+    .classes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-criar {
+        width: 100%;
+    }
+}

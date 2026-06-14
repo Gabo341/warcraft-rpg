@@ -1,0 +1,158 @@
+<!-- ===========================================================
+  src/app/features/ending/ending.component.html
+  Tela de final do jogo.
+
+  Recebe via @Input():
+    type → 'light' (Final A) ou 'dark' (Final B)
+
+  Estado do componente:
+    carregando  → true enquanto busca o jogador na API
+    jogador     → Player com nome e classe do personagem
+    ehFinalDaLuz → getter: true se type === 'light'
+
+  Estrutura da tela:
+    .ending-page
+      ├── .ending-inner
+      │     ├── .ending-header   → ornamento + eyebrow + título
+      │     ├── .ending-divider  → separador decorativo
+      │     ├── .ending-narrative → texto do final
+      │     ├── .ending-player   → nome e classe do personagem
+      │     └── .ending-actions  → botões de jogar novamente / início
+      └── glows ambientais (decoração de fundo)
+=========================================================== -->
+
+<div class="ending-page" [class.ending-dark]="!ehFinalDaLuz">
+
+  <!-- Glows ambientais — holy para Final A, DK para Final B -->
+  <div class="ambient-glow"
+       [class.ambient-holy]="ehFinalDaLuz"
+       [class.ambient-dk]="!ehFinalDaLuz">
+  </div>
+
+  <!-- ── ESTADO: CARREGANDO ──────────────────────────────── -->
+  <div class="loading-state" *ngIf="carregando">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- ── CONTEÚDO DO FINAL ───────────────────────────────── -->
+  <div class="ending-inner" *ngIf="!carregando">
+
+    <!-- ── CABEÇALHO ─────────────────────────────────── -->
+    <div class="ending-header">
+
+      <!-- Ornamento: linha — gema — linha -->
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-gem"></span>
+        <span class="ornament-line right"></span>
+      </div>
+
+      <!--
+        Eyebrow diferente por final:
+          Final A → "FINAL A · A CHAMA RESISTE"
+          Final B → "FINAL B · O REINO CAI"
+      -->
+      <p class="ending-eyebrow">
+        <span *ngIf="ehFinalDaLuz">Final A · A Chama Resiste</span>
+        <span *ngIf="!ehFinalDaLuz">Final B · O Reino Cai</span>
+      </p>
+
+      <!-- Título principal do final -->
+      <h1 class="ending-title">
+        <span *ngIf="ehFinalDaLuz">A Chama Resiste</span>
+        <span *ngIf="!ehFinalDaLuz">O Reino Cai</span>
+      </h1>
+
+    </div>
+
+    <!-- ── SEPARADOR ─────────────────────────────────── -->
+    <div class="ending-divider">
+      <span class="divider-line"></span>
+      <span class="divider-gem"></span>
+      <span class="divider-line right"></span>
+    </div>
+
+    <!-- ── TEXTO NARRATIVO DO FINAL ──────────────────── -->
+    <!--
+      Texto diferente por caminho — espelha o conteúdo
+      das cenas ending_light e ending_dark do banco.
+      Exibimos aqui como texto estático de encerramento,
+      pois estas cenas não têm choices — são o fim do jogo.
+    -->
+    <div class="ending-narrative">
+
+      <!-- Final A — Caminho da Luz -->
+      <ng-container *ngIf="ehFinalDaLuz">
+        <p>
+          Você não venceu. Ninguém venceu hoje. Lordaeron caiu —
+          isso é um fato que vai durar nos livros de história por gerações.
+          O rei está morto. Arthas usa uma coroa e uma espada que não
+          deveriam existir.
+        </p>
+        <p>
+          Mas você está vivo. E enquanto houver pessoas ao redor desta
+          fogueira que sabem o que Arthas era antes de Frostmourne,
+          há algo para defender. Não um trono. Não um rei.
+          A memória do que um reino pode ser quando escolhe fazer
+          a coisa certa, mesmo quando a coisa certa custa tudo.
+        </p>
+        <p class="ending-quote">
+          "Uther dizia que a Luz não promete vitória.
+          Só promete que vale a pena lutar."
+          <span class="quote-author">— Jaina Proudmoore</span>
+        </p>
+      </ng-container>
+
+      <!-- Final B — Caminho Sombrio -->
+      <ng-container *ngIf="!ehFinalDaLuz">
+        <p>
+          Lordaeron à noite, sem luzes nas janelas, parece um lugar
+          que nunca teve pessoas. Não é que as pessoas foram embora.
+          É que o lugar que elas habitavam foi consumido por outra coisa.
+        </p>
+        <p>
+          Você sobreviveu. Você ganhou, se ganhar é a palavra certa
+          para isso. Mas nos anos que virão, haverá uma pergunta que
+          vai te acompanhar: se eu tivesse ficado com Jaina naquele
+          dia em Stratholme — o que teria sido diferente?
+        </p>
+        <p class="ending-quote">
+          "Você vai aprender a parar de fazer essa pergunta.
+          Demora. Mas aprende."
+          <span class="quote-author">— Narrador</span>
+        </p>
+      </ng-container>
+
+    </div>
+
+    <!-- ── DADOS DO PERSONAGEM ────────────────────────── -->
+    <!--
+      Exibe o nome e a classe do personagem que completou
+      o jogo. Só aparece quando o jogador foi carregado.
+    -->
+    <div class="ending-player" *ngIf="jogador">
+      <p class="ending-player-label">Personagem</p>
+      <p class="ending-player-name">{{ jogador.name }}</p>
+      <p class="ending-player-class">
+        {{ jogador.class }} · {{ jogador.race }}
+      </p>
+    </div>
+
+    <!-- ── AÇÕES ──────────────────────────────────────── -->
+    <div class="ending-actions">
+
+      <!-- Botão principal: começa nova partida -->
+      <button class="btn-primary" (click)="novaPartida()">
+        ⚔ Jogar novamente
+      </button>
+
+      <!-- Link secundário: volta para a tela inicial -->
+      <button class="btn-ghost" (click)="voltarInicio()">
+        ← Voltar ao início
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

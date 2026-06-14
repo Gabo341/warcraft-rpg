@@ -1,35 +1,36 @@
 // =============================================================
-// Definição de todas as rotas da aplicação Angular.
+// app.routes.ts — Definição das rotas da aplicação.
 //
-// O Angular Router lê este array e decide qual componente
-// renderizar de acordo com a URL que o usuário acessar.
+// Cada rota mapeia uma URL para um componente Angular.
+// O Router lê este arquivo e decide qual componente renderizar
+// dentro do <router-outlet> do AppComponent quando a URL muda.
 //
-// Rotas com loadComponent usam "lazy loading" — o Angular
-// só baixa o código do componente quando o usuário navegar
-// até aquela rota, tornando o carregamento inicial mais rápido.
+// Rotas da aplicação (conforme 03_arquitetura_pastas.docx):
+//   /              → HomeComponent          (sem guard)
+//   /create        → CharacterCreationComponent (sem guard)
+//   /scene/:slug   → SceneComponent         (com guard)
+//   /ending/:type  → EndingComponent         (com guard)
+//
+// O gameActiveGuard protege /scene e /ending:
+// se o jogador tentar acessar essas URLs diretamente sem ter
+// uma partida ativa, é redirecionado para /.
 // =============================================================
 
 import { Routes } from '@angular/router';
 
 // Guard que protege rotas que exigem partida ativa
-// (será criado em core/guards/game-active.guard.ts)
 import { gameActiveGuard } from './core/guards/game-active.guard';
 
-// -------------------------------------------------------------
-// ROTAS DA APLICAÇÃO
-//
-// Cada objeto do array define uma rota com:
-//   path          → trecho da URL (sem a barra inicial)
-//   loadComponent → componente carregado sob demanda (lazy)
-//   canActivate   → guards executados antes de entrar na rota
-// -------------------------------------------------------------
+// Componentes de cada tela
+// Usamos lazy loading (loadComponent) em vez de importar direto:
+// o Angular só baixa o código do componente quando o usuário
+// navegar para aquela rota — melhora o tempo de carregamento inicial.
 export const routes: Routes = [
 
-    // -----------------------------------------------------------
-    // ROTA: /
-    // Tela inicial do jogo — apresentação e botão "Jogar".
-    // Qualquer visitante pode acessar, sem guard.
-    // -----------------------------------------------------------
+    // ----------------------------------------------------------
+    // / → Tela inicial
+    // Sempre acessível — não exige partida ativa.
+    // ----------------------------------------------------------
     {
         path: '',
         loadComponent: () =>
@@ -37,11 +38,10 @@ export const routes: Routes = [
                 .then(m => m.HomeComponent),
     },
 
-    // -----------------------------------------------------------
-    // ROTA: /create
-    // Tela de criação de personagem — escolha de nome, classe e raça.
-    // Também pública: o jogador ainda não tem partida ativa aqui.
-    // -----------------------------------------------------------
+    // ----------------------------------------------------------
+    // /create → Criação de personagem
+    // Sempre acessível — o jogador ainda não tem partida aqui.
+    // ----------------------------------------------------------
     {
         path: 'create',
         loadComponent: () =>
@@ -49,18 +49,16 @@ export const routes: Routes = [
                 .then(m => m.CharacterCreationComponent),
     },
 
-    // -----------------------------------------------------------
-    // ROTA: /scene/:slug
-    // Tela principal do jogo — exibe a cena e as escolhas.
+    // ----------------------------------------------------------
+    // /scene/:slug → Tela principal de jogo
     //
-    // :slug é um parâmetro dinâmico. Exemplos de URLs válidas:
-    //   /scene/brill_arrival
-    //   /scene/stratholme_gates
+    // :slug é um parâmetro dinâmico — ex: /scene/brill_arrival
+    // O SceneComponent recebe o slug via @Input() graças ao
+    // withComponentInputBinding() configurado no app.config.ts.
     //
-    // Protegida pelo GameActiveGuard: se o jogador tentar acessar
-    // esta rota sem ter uma partida ativa (sem playerId salvo),
-    // será redirecionado para a tela inicial.
-    // -----------------------------------------------------------
+    // canActivate: executa o gameActiveGuard antes de renderizar.
+    // Se não há partida ativa, redireciona para /.
+    // ----------------------------------------------------------
     {
         path: 'scene/:slug',
         loadComponent: () =>
@@ -69,16 +67,13 @@ export const routes: Routes = [
         canActivate: [gameActiveGuard],
     },
 
-    // -----------------------------------------------------------
-    // ROTA: /ending/:type
-    // Tela de final da história — exibe o Final A ou Final B.
+    // ----------------------------------------------------------
+    // /ending/:type → Tela de final
     //
-    // :type receberá 'light' ou 'dark', por exemplo:
-    //   /ending/light → Final A (A Chama Resiste)
-    //   /ending/dark  → Final B (O Reino Cai)
-    //
-    // Também protegida: só quem tem partida ativa chega aqui.
-    // -----------------------------------------------------------
+    // :type recebe 'light' ou 'dark' — define qual final exibir.
+    // Também protegida pelo guard: o jogador só chega aqui
+    // depois de completar o jogo, não diretamente pela URL.
+    // ----------------------------------------------------------
     {
         path: 'ending/:type',
         loadComponent: () =>
@@ -87,13 +82,10 @@ export const routes: Routes = [
         canActivate: [gameActiveGuard],
     },
 
-    // -----------------------------------------------------------
-    // ROTA CORINGA: **
-    // Qualquer URL que não bater com nenhuma rota acima
-    // redireciona para a tela inicial.
-    //
-    // Exemplo: o usuário digita /pagina-invalida → vai para /
-    // -----------------------------------------------------------
+    // ----------------------------------------------------------
+    // Rota coringa — qualquer URL não reconhecida vai para /
+    // Evita tela em branco se o usuário digitar uma URL errada.
+    // ----------------------------------------------------------
     {
         path: '**',
         redirectTo: '',

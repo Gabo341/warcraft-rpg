@@ -1,10 +1,170 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- ===========================================================
+  src/app/features/scene/scene.component.html
+  Tela principal de jogo.
 
-</body>
-</html>
+  Layout em duas colunas (Bootstrap grid):
+    col-md-9 → área principal: imagem + texto + escolhas
+    col-md-3 → coluna lateral: painel de poderes
+
+  Estados possíveis da tela:
+    1. carregando → skeleton/spinner enquanto busca a cena
+    2. erro       → mensagem de erro com botão de retry
+    3. cena       → conteúdo normal do jogo
+
+  Componentes shared usados:
+    <app-scene-display>  → overlay de background + sprite
+    <app-choice-button>  → botão de escolha individual
+    <app-powers-panel>   → painel lateral de poderes
+
+  Diretivas Angular usadas:
+    *ngIf   → renderiza bloco apenas quando condição é true
+    *ngFor  → repete elemento para cada item do array
+    (chosen)→ escuta evento emitido pelo ChoiceButtonComponent
+=========================================================== -->
+
+<div class="scene-page">
+    <div class="container-fluid h-100 p-0">
+        <div class="row g-0 h-100">
+
+            <!-- ══════════════════════════════════════════════════════
+                 COLUNA PRINCIPAL (9/12 em desktop, 12/12 em mobile)
+                 Contém: imagem da cena, texto narrativo, choices
+            ══════════════════════════════════════════════════════ -->
+            <div class="col-12 col-md-9 scene-main">
+
+                <!-- ── ESTADO: CARREGANDO ──────────────────────────
+                     Exibido enquanto aguarda GET /scenes/:slug.
+                     *ngIf renderiza apenas quando carregando = true.
+                ─────────────────────────────────────────────────── -->
+                <div class="loading-state" *ngIf="carregando">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Carregando cena...</p>
+                </div>
+
+                <!-- ── ESTADO: ERRO ────────────────────────────────
+                     Exibido quando a API retorna erro.
+                     O botão chama carregarCena() para tentar novamente.
+                     Só aparece quando não está carregando E há erro.
+                ─────────────────────────────────────────────────── -->
+                <div class="erro-state" *ngIf="!carregando && erro">
+                    <p class="erro-text">{{ erro }}</p>
+                    <button class="btn-ghost" (click)="ngOnInit()">
+                        ↺ Tentar novamente
+                    </button>
+                </div>
+
+                <!-- ── ESTADO: CENA CARREGADA ──────────────────────
+                     Bloco principal — só aparece quando a cena
+                     foi carregada com sucesso (cena !== null).
+                ─────────────────────────────────────────────────── -->
+                <ng-container *ngIf="!carregando && !erro && cena">
+
+                    <!-- Overlay de imagens: background + sprite
+                         Os campos background_image e sprite_image vêm
+                         diretamente do banco via GET /scenes/:slug.
+                    -->
+                    <app-scene-display
+                            [background]="cena.background_image"
+                            [sprite]="cena.sprite_image"
+                    />
+
+                    <!-- Área de conteúdo textual abaixo da imagem -->
+                    <div class="scene-content">
+
+                        <!-- Eyebrow: "ATO 1" em Cinzel maiúsculo -->
+                        <p class="scene-eyebrow">Ato {{ cena.act }}</p>
+
+                        <!-- Título da cena -->
+                        <h1 class="scene-title">{{ cena.title }}</h1>
+
+                        <!-- Separador decorativo -->
+                        <div class="scene-divider">
+                            <span class="divider-line"></span>
+                            <span class="divider-gem"></span>
+                            <span class="divider-line right"></span>
+                        </div>
+
+                        <!-- Texto narrativo da cena.
+                             white-space: pre-line no CSS preserva as
+                             quebras de linha do texto do banco. -->
+                        <div class="narrative">
+                            <p>{{ cena.narrative_text }}</p>
+                        </div>
+
+                        <!-- ── CHOICES ────────────────────────────────
+                             Lista de opções disponíveis para o jogador.
+
+                             O CSS do .choices-list define o counter-reset
+                             que gera as letras A, B, C... automaticamente
+                             no ChoiceButtonComponent.
+
+                             [desabilitado]="processando" → desabilita todos
+                             os botões enquanto uma escolha é processada,
+                             evitando cliques duplos.
+
+                             (chosen)="onEscolha($event)" → escuta o evento
+                             emitido pelo ChoiceButtonComponent e chama
+                             onEscolha() com o objeto Choice completo.
+                        ─────────────────────────────────────────────── -->
+                        <div class="choices-list" *ngIf="cena.choices.length > 0">
+
+                            <p class="choices-label">O que você faz?</p>
+
+                            <app-choice-button
+                                    *ngFor="let choice of cena.choices"
+                                    [choice]="choice"
+                                    [desabilitado]="processando"
+                                    (chosen)="onEscolha($event)"
+                            />
+
+                        </div>
+
+                        <!-- Mensagem quando não há choices (cena de transição) -->
+                        <div class="no-choices" *ngIf="cena.choices.length === 0">
+                            <p>A história continua...</p>
+                        </div>
+
+                    </div>
+
+                </ng-container>
+
+            </div>
+
+            <!-- ══════════════════════════════════════════════════════
+                 COLUNA LATERAL (3/12 em desktop, oculta em mobile)
+                 Contém: painel de poderes desbloqueados
+            ══════════════════════════════════════════════════════ -->
+            <div class="col-12 col-md-3 p-0">
+                <app-powers-panel [powers]="poderes" />
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════
+         POPUP DE PODER DESBLOQUEADO
+
+         Aparece por 3 segundos quando o jogador desbloqueia
+         um poder ao avançar de ato. Controlado por
+         poderDesbloqueado no .ts — null = oculto.
+
+         position: fixed no CSS o mantém sobre todo o conteúdo,
+         independente do scroll da página.
+    ══════════════════════════════════════════════════════════ -->
+    <div class="poder-popup" *ngIf="poderDesbloqueado">
+
+        <div class="poder-popup-inner">
+
+            <p class="poder-popup-eyebrow">Novo poder desbloqueado</p>
+
+            <p class="poder-popup-nome">{{ poderDesbloqueado }}</p>
+
+            <p class="poder-popup-hint">
+                Verifique o painel lateral para mais detalhes.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

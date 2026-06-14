@@ -1,0 +1,94 @@
+<!-- ===========================================================
+  src/app/shared/powers-panel/powers-panel.component.html
+  Painel lateral de poderes desbloqueados do jogador.
+
+  Recebe via @Input():
+    powers → Power[] com os poderes já desbloqueados
+             (vem de GET /players/:id/powers via SceneComponent)
+
+  Lógica de agrupamento:
+    O getter poderesAgrupados() no .ts já entrega os poderes
+    separados por ato — o template só itera e renderiza.
+    Atos sem poderes desbloqueados não aparecem.
+=========================================================== -->
+
+<aside class="panel">
+
+    <!-- ── CABEÇALHO ──────────────────────────────────────── -->
+    <div class="panel-header">
+
+        <p class="panel-eyebrow">Poderes</p>
+
+        <!--
+          Contador de poderes desbloqueados.
+          Atualiza automaticamente quando o @Input() powers muda.
+          Pluraliza "desbloqueado" conforme a quantidade.
+        -->
+        <span class="panel-count">
+            {{ powers.length }}
+            {{ powers.length !== 1 ? 'desbloqueados' : 'desbloqueado' }}
+        </span>
+
+    </div>
+
+    <!-- ── CORPO ──────────────────────────────────────────── -->
+    <div class="panel-body">
+
+        <!--
+          Estado vazio: exibido quando o jogador ainda não tem
+          nenhum poder desbloqueado (powers.length === 0).
+          *ngIf renderiza o elemento apenas quando a condição
+          for verdadeira.
+        -->
+        <div class="empty-state" *ngIf="powers.length === 0">
+            <p class="empty-text">
+                Seus poderes aparecem aqui conforme você avança na história.
+            </p>
+        </div>
+
+        <!--
+          Um bloco por ato com poderes desbloqueados.
+
+          poderesAgrupados é um getter do .ts que retorna:
+          [
+            { ato: 1, label: 'Ato I',  poderes: [...] },
+            { ato: 2, label: 'Ato II', poderes: [...] }
+          ]
+
+          Atos sem poderes já foram filtrados no getter —
+          o template não precisa verificar novamente.
+
+          'let grupo of poderesAgrupados' → Angular repete
+          este bloco uma vez para cada grupo retornado.
+        -->
+        <div
+                class="ato-block"
+                *ngFor="let grupo of poderesAgrupados"
+        >
+
+            <!-- Label do ato: "Ato I", "Ato II"... -->
+            <p class="ato-label">{{ grupo.label }}</p>
+
+            <!--
+              Um card por poder dentro deste ato.
+              'let power of grupo.poderes' → itera os poderes
+              do grupo atual.
+            -->
+            <div
+                    class="power-item"
+                    *ngFor="let power of grupo.poderes"
+            >
+
+                <!-- Nome do poder — ex: "Golpe Sagrado" -->
+                <p class="power-name">{{ power.name }}</p>
+
+                <!-- Descrição do efeito do poder -->
+                <p class="power-description">{{ power.description }}</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>

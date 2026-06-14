@@ -1,0 +1,210 @@
+/* =============================================================
+   src/app/shared/powers-panel/powers-panel.component.css
+   Painel lateral de poderes desbloqueados do jogador.
+
+   Este componente é renderizado na coluna lateral da tela
+   de cena (col-md-3 do layout Bootstrap — scene.component.html).
+
+   Estrutura coberta aqui:
+     .panel          → container principal do painel
+     .panel-header   → título + contador
+     .panel-body     → área de scroll com os poderes
+     .empty-state    → mensagem quando não há poderes
+     .ato-block      → agrupamento por ato (I, II, III, IV)
+     .power-item     → card individual de cada poder
+
+   Variáveis CSS (--deep, --rim, --holy-bright, etc.)
+   vêm do styles.css global — não redefinidas aqui.
+   ============================================================= */
+
+
+/* ── CONTAINER PRINCIPAL ─────────────────────────────────────── */
+
+/*
+   O painel ocupa 100% da altura da coluna lateral.
+   display: flex + flex-direction: column permite que o
+   .panel-body cresça e role independente do cabeçalho fixo.
+*/
+.panel {
+    display:        flex;
+    flex-direction: column;
+    height:         100%;
+    min-height:     0; /* necessário para o scroll interno funcionar */
+
+    background:  var(--deep);
+    border-left: 1px solid var(--rim);
+}
+
+
+/* ── CABEÇALHO DO PAINEL ─────────────────────────────────────── */
+
+/*
+   Fixo no topo — não rola com o conteúdo.
+   O border-bottom separa visualmente do corpo.
+*/
+.panel-header {
+    flex-shrink: 0; /* não encolhe quando o body cresce */
+
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+
+    padding:       1rem 1.1rem .9rem;
+    border-bottom: 1px solid var(--rim);
+}
+
+/* Eyebrow: "PODERES" em Cinzel maiúsculo */
+.panel-eyebrow {
+    font-family:    'Cinzel', serif;
+    font-size:      .62rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--holy-dim);
+    margin:         0;
+}
+
+/* Contador: "3 desbloqueados" */
+.panel-count {
+    font-family:    'Cinzel', serif;
+    font-size:      .6rem;
+    letter-spacing: .08em;
+    color:          var(--txt-dim);
+}
+
+
+/* ── CORPO DO PAINEL ─────────────────────────────────────────── */
+
+/*
+   flex: 1 faz o corpo ocupar todo o espaço restante
+   abaixo do cabeçalho.
+
+   overflow-y: auto adiciona scroll vertical quando os poderes
+   não cabem na tela — o cabeçalho permanece fixo.
+*/
+.panel-body {
+    flex:       1;
+    overflow-y: auto;
+    padding:    .8rem 0;
+
+    /* Estiliza a scrollbar para combinar com o design */
+    scrollbar-width: thin;
+    scrollbar-color: var(--rim) transparent;
+}
+
+/* Scrollbar para navegadores WebKit (Chrome, Edge, Safari) */
+.panel-body::-webkit-scrollbar {
+    width: 4px;
+}
+.panel-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.panel-body::-webkit-scrollbar-thumb {
+    background:    var(--rim);
+    border-radius: 999px;
+}
+
+
+/* ── ESTADO VAZIO ────────────────────────────────────────────── */
+
+/*
+   Exibido quando o jogador ainda não desbloqueou nenhum poder.
+   Centralizado verticalmente no corpo do painel.
+*/
+.empty-state {
+    padding: 2rem 1.1rem;
+    text-align: center;
+}
+
+.empty-text {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   .88rem;
+    color:       var(--txt-dim);
+    font-style:  italic;
+    line-height: 1.6;
+    margin:      0;
+}
+
+
+/* ── BLOCO DE ATO ────────────────────────────────────────────── */
+
+/*
+   Um bloco por ato com poderes desbloqueados.
+   Separado do bloco anterior por uma linha sutil.
+*/
+.ato-block {
+    padding: .5rem 0 .8rem;
+}
+
+/* Linha separadora entre blocos de ato */
+.ato-block + .ato-block {
+    border-top: 1px solid var(--rim);
+    margin-top: .3rem;
+    padding-top: .8rem;
+}
+
+/* Label do ato: "ATO I", "ATO II"... */
+.ato-label {
+    font-family:    'Cinzel', serif;
+    font-size:      .55rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--holy-dim);
+    padding:        0 1.1rem;
+    margin:         0 0 .6rem;
+}
+
+
+/* ── CARD DE PODER ───────────────────────────────────────────── */
+
+/*
+   Card individual de cada poder desbloqueado.
+   Linha colorida à esquerda identifica o poder visualmente.
+*/
+.power-item {
+    padding:     .55rem 1.1rem .55rem 1rem;
+    border-left: 2px solid transparent; /* reserva espaço — cor no hover */
+    margin:      0 0 .2rem;
+
+    transition: border-color .2s, background .2s;
+}
+
+.power-item:hover {
+    border-left-color: var(--holy-dim);
+    background:        var(--surface);
+}
+
+/* Nome do poder — ex: "Golpe Sagrado" */
+.power-name {
+    font-family:   'Cinzel', serif;
+    font-size:     .78rem;
+    color:         var(--txt-bright);
+    margin:        0 0 .2rem;
+    line-height:   1.3;
+}
+
+/* Descrição do efeito do poder */
+.power-description {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   .8rem;
+    color:       var(--txt-dim);
+    font-style:  italic;
+    line-height: 1.45;
+    margin:      0;
+}
+
+
+/* ── RESPONSIVIDADE ──────────────────────────────────────────── */
+
+/*
+   Em mobile o painel lateral some — o layout do SceneComponent
+   empilha a cena e as escolhas em coluna única.
+   O painel aparece abaixo das escolhas como uma seção expandível.
+*/
+@media (max-width: 768px) {
+    .panel {
+        border-left:  none;
+        border-top:   1px solid var(--rim);
+        height:       auto;
+        max-height:   280px; /* altura máxima antes de rolar */
+    }
+}

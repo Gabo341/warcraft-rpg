@@ -1,0 +1,188 @@
+/* =============================================================
+   choice-button.component.css — Botão de escolha individual.
+
+   Cada choice do banco vira um botão independente na tela.
+   O SceneComponent renderiza N destes via *ngFor.
+
+   Estrutura visual:
+     .choice-btn
+       ├── .choice-letter   → letra A, B, C... gerada por CSS counter
+       ├── .choice-content  → label + description
+       └── .choice-arrow    → seta → que aparece no hover
+
+   Variáveis CSS (--deep, --rim, --holy-bright, etc.)
+   vêm do styles.css global — não redefinidas aqui.
+   ============================================================= */
+
+
+/* ── COUNTER CSS ─────────────────────────────────────────────
+   O CSS counter gera as letras A, B, C... automaticamente
+   sem precisar de lógica no TypeScript.
+
+   Como funciona:
+     1. O SceneComponent define 'counter-reset: choice-counter'
+        no container pai (.choices-list no scene.component.css)
+     2. Cada .choice-btn incrementa o counter em 1
+     3. O ::before do .choice-letter exibe a letra atual
+
+   Resultado: primeiro botão = A, segundo = B, terceiro = C.
+   ─────────────────────────────────────────────────────────── */
+
+/* Incrementa o counter a cada botão renderizado */
+.choice-btn {
+    counter-increment: choice-counter;
+}
+
+/* Exibe a letra no .choice-letter via pseudo-elemento */
+.choice-letter::before {
+    /* upper-alpha converte 1→A, 2→B, 3→C automaticamente */
+    content: counter(choice-counter, upper-alpha);
+}
+
+
+/* ── BOTÃO BASE ──────────────────────────────────────────────── */
+
+.choice-btn {
+    /* Reset de estilos nativos do <button> */
+    appearance:  none;
+    border:      none;
+    background:  none;
+    text-align:  left;
+    font-family: inherit;
+
+    /* Layout interno: letra | conteúdo | seta */
+    display:     flex;
+    align-items: flex-start;
+    gap:         .8rem;
+    width:       100%;
+
+    /* Visual do card */
+    background:    var(--deep);
+    border:        1px solid var(--rim);
+    border-radius: 6px;
+    padding:       .85rem 1.1rem;
+    cursor:        pointer;
+
+    /* Transições suaves de hover */
+    transition: border-color .2s, background .2s,
+    transform .15s, box-shadow .2s;
+}
+
+.choice-btn:hover:not(.desabilitado) {
+    border-color: var(--holy-dim);
+    background:   var(--surface);
+    transform:    translateX(4px); /* desloca levemente para a direita */
+    box-shadow:   0 4px 20px rgba(0, 0, 0, .3);
+}
+
+/* Feedback visual ao clicar — retorna ao lugar */
+.choice-btn:active:not(.desabilitado) {
+    transform: translateX(2px);
+}
+
+/* Estado desabilitado: escurece e bloqueia cursor */
+.choice-btn.desabilitado {
+    opacity: .45;
+    cursor:  not-allowed;
+}
+
+
+/* ── LETRA IDENTIFICADORA (A, B, C...) ───────────────────────── */
+
+.choice-letter {
+    /* Dimensão fixa para alinhar com o conteúdo */
+    flex-shrink: 0;
+    width:       28px;
+    height:      28px;
+
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+
+    font-family:    'Cinzel Decorative', serif;
+    font-size:       1rem;
+    color:           var(--holy-dim);
+    line-height:     1;
+
+    /* Borda sutil ao redor da letra */
+    border:        1px solid var(--rim);
+    border-radius: 4px;
+    background:    var(--surface);
+
+    /* Transição de cor no hover do pai */
+    transition: color .2s, border-color .2s;
+}
+
+/* No hover do botão pai, a letra fica mais brilhante */
+.choice-btn:hover:not(.desabilitado) .choice-letter {
+    color:        var(--holy-bright);
+    border-color: var(--holy-dim);
+}
+
+
+/* ── CONTEÚDO (label + description) ─────────────────────────── */
+
+.choice-content {
+    flex: 1; /* ocupa todo o espaço entre a letra e a seta */
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+/* Label curto — texto principal da escolha */
+.choice-label {
+    font-family:  'Cinzel', serif;
+    font-size:    .85rem;
+    color:        var(--txt-bright);
+    line-height:  1.4;
+    margin:       0;
+    transition:   color .2s;
+}
+
+.choice-btn:hover:not(.desabilitado) .choice-label {
+    color: var(--holy-bright);
+}
+
+/* Descrição — antecipa a consequência da escolha */
+.choice-description {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   .88rem;
+    color:       var(--txt-dim);
+    font-style:  italic;
+    line-height: 1.5;
+    margin:      0;
+}
+
+
+/* ── SETA DECORATIVA ─────────────────────────────────────────── */
+
+.choice-arrow {
+    flex-shrink: 0;
+    font-size:   1rem;
+    color:       var(--rim);
+
+    /* Alinha verticalmente com o label */
+    margin-top:  4px;
+
+    /* A seta desloca para a direita no hover — reforça a direção */
+    transition: color .2s, transform .2s;
+}
+
+.choice-btn:hover:not(.desabilitado) .choice-arrow {
+    color:     var(--holy-dim);
+    transform: translateX(4px);
+}
+
+
+/* ── RESPONSIVIDADE ──────────────────────────────────────────── */
+
+/* Em mobile a description some para economizar espaço vertical */
+@media (max-width: 480px) {
+    .choice-description {
+        display: none;
+    }
+
+    .choice-btn {
+        padding: .75rem .9rem;
+    }
+}

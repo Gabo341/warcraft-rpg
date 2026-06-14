@@ -1,10 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- ===========================================================
+  choice-button.component.html — Botão de escolha individual.
 
-</body>
-</html>
+  Recebe via @Input():
+    choice      → { id, label, description, next_scene_slug }
+    desabilitado → true enquanto o pai processa uma escolha
+
+  Emite via @Output():
+    chosen → dispara quando o jogador clica no botão,
+             passando o objeto Choice completo para o pai
+
+  Estrutura do botão:
+    .choice-btn
+      ├── .choice-letter   → letra identificadora (A, B, C...)
+      ├── .choice-content
+      │     ├── .choice-label       → texto curto da escolha
+      │     └── .choice-description → descrição do que acontece
+      └── .choice-arrow    → seta decorativa →
+=========================================================== -->
+
+<!--
+  [class.desabilitado] aplica a classe CSS 'desabilitado'
+  quando a propriedade this.desabilitado for true — escurece
+  o botão e bloqueia o cursor enquanto o pai processa.
+
+  [disabled] desabilita o elemento HTML nativo, impedindo
+  cliques e tabulação pelo teclado.
+
+  (click) chama escolher() no .ts, que emite o evento chosen.
+-->
+<button
+        class="choice-btn"
+        [class.desabilitado]="desabilitado"
+        [disabled]="desabilitado"
+        (click)="escolher()"
+>
+
+    <!--
+      Letra identificadora da escolha: A, B, C...
+      Gerada automaticamente pela ordem no *ngFor do pai —
+      não existe no banco, é só visual para o jogador
+      identificar as opções rapidamente.
+
+      O banco não guarda letra — só label e description.
+      Por isso o pai não passa a letra via @Input():
+      cada instância de choice-button não sabe sua posição
+      no array. A letra é adicionada via CSS counter
+      no .choice-letter para não precisar de lógica no .ts.
+    -->
+    <span class="choice-letter" aria-hidden="true"></span>
+
+    <!-- Área de texto da escolha -->
+    <div class="choice-content">
+
+        <!--
+          Label curto — texto do botão de escolha.
+          Ex: "Seguir a velha discretamente"
+        -->
+        <p class="choice-label">{{ choice.label }}</p>
+
+        <!--
+          Descrição — antecipa o que acontece ao escolher.
+          Ex: "Você pede licença e sai pela lateral..."
+          Pode estar vazia no banco — o *ngIf evita espaço vazio.
+        -->
+        <p class="choice-description" *ngIf="choice.description">
+            {{ choice.description }}
+        </p>
+
+    </div>
+
+    <!-- Seta decorativa — indica interatividade -->
+    <span class="choice-arrow" aria-hidden="true">→</span>
+
+</button>

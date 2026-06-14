@@ -1,0 +1,122 @@
+/* =============================================================
+   ending.component.css — Overlay de imagens da cena.
+
+   Implementa a técnica de sobreposição definida no documento
+   03_arquitetura_pastas.docx (seção 5 — Técnica de Overlay):
+
+     .scene-wrapper → container relativo que define o espaço
+     .background    → imagem de fundo, cobre 100% do container
+     .sprite        → personagem/NPC na frente do fundo
+
+   Variáveis CSS (--void, --abyss, etc.) vêm do styles.css global.
+   ============================================================= */
+
+
+/* ── Container principal ─────────────────────────────────────── */
+
+/*
+   position: relative é obrigatório aqui.
+   Os filhos com position: absolute se posicionam em relação
+   a este elemento — sem isso, eles se posicionariam em relação
+   ao body inteiro e o overlay quebraria.
+
+   aspect-ratio: 16/9 mantém a proporção cinematográfica
+   independente da largura da tela — o container sempre vai
+   ter altura proporcional à largura.
+
+   overflow: hidden garante que nenhuma imagem vaze para fora
+   dos limites do container.
+*/
+.scene-wrapper {
+    position:     relative;
+    width:        100%;
+    aspect-ratio: 16 / 9;
+    overflow:     hidden;
+
+    /* Fundo escuro enquanto as imagens carregam */
+    background: var(--void);
+}
+
+
+/* ── Imagem de fundo (cenário) ───────────────────────────────── */
+
+/*
+   position: absolute + inset: 0 faz a imagem cobrir exatamente
+   o mesmo espaço do container pai.
+
+   object-fit: cover faz a imagem preencher o espaço sem
+   distorcer — corta as bordas se necessário, mas mantém
+   a proporção original da imagem.
+*/
+.background {
+    position:   absolute;
+    inset:      0;           /* equivale a top/right/bottom/left: 0 */
+    width:      100%;
+    height:     100%;
+    object-fit: cover;
+
+    /* Escurece levemente o fundo para o sprite se destacar mais */
+    filter: brightness(.85);
+}
+
+
+/* ── Sprite do personagem/NPC ────────────────────────────────── */
+
+/*
+   Posicionado absolutamente na frente do fundo (z-index: 1).
+   Ancorado na base do container (bottom: 0).
+   Centralizado horizontalmente com left: 50% + translateX(-50%).
+
+   height: 80% faz o sprite ocupar 80% da altura do container —
+   proporcional, funciona em qualquer resolução.
+*/
+.sprite {
+    position:  absolute;
+    bottom:    0;
+    left:      50%;
+    transform: translateX(-50%); /* centraliza sem saber a largura exata */
+    height:    80%;
+    z-index:   1;                /* fica na frente do .background */
+
+    /* object-fit: contain preserva a proporção do sprite inteiro
+       sem cortar — diferente do fundo que usa cover */
+    object-fit: contain;
+}
+
+
+/* ── Gradiente de fade na base ───────────────────────────────── */
+
+/*
+   Pseudo-elemento que cria um fade suave do fundo da cena
+   para o fundo da página (--abyss), integrando visualmente
+   a imagem com o texto narrativo que vem abaixo.
+*/
+.scene-wrapper::after {
+    content:  '';
+    position: absolute;
+    bottom:   0;
+    left:     0;
+    right:    0;
+    height:   35%;
+    z-index:  2; /* fica na frente do sprite para cobrir a base */
+
+    background: linear-gradient(
+            to top,
+            var(--abyss) 0%,
+            transparent 100%
+    );
+
+    /* pointer-events: none garante que o gradiente não bloqueie
+       cliques em elementos abaixo (como botões de escolha) */
+    pointer-events: none;
+}
+
+
+/* ── Responsividade ──────────────────────────────────────────── */
+
+/* Em mobile o sprite pode ficar grande demais — limitamos */
+@media (max-width: 480px) {
+    .sprite {
+        height: 70%; /* um pouco menor em telas pequenas */
+    }
+}

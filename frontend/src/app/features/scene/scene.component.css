@@ -1,0 +1,328 @@
+/* =============================================================
+   src/app/features/scene/scene.component.css
+   Tela principal de jogo — layout, narrativa e choices.
+
+   Estrutura coberta aqui:
+     .scene-page      → container geral da tela
+     .scene-main      → coluna principal (imagem + texto)
+     .scene-content   → área de texto abaixo da imagem
+     .scene-eyebrow   → "ATO 1" acima do título
+     .scene-title     → título da cena
+     .scene-divider   → separador decorativo
+     .narrative       → texto narrativo da cena
+     .choices-list    → container das choices (define o counter)
+     .choices-label   → "O que você faz?"
+     .loading-state   → spinner de carregamento
+     .erro-state      → mensagem de erro
+     .poder-popup     → popup de poder desbloqueado
+
+   Variáveis CSS (--abyss, --holy-bright, etc.)
+   vêm do styles.css global — não redefinidas aqui.
+   ============================================================= */
+
+
+/* ── CONTAINER GERAL DA TELA ─────────────────────────────────── */
+
+/*
+   min-height: 100vh garante que a tela ocupa no mínimo
+   toda a altura do navegador, mesmo com pouco conteúdo.
+*/
+.scene-page {
+    min-height:  100vh;
+    background:  var(--abyss);
+    color:       var(--txt-bright);
+}
+
+
+/* ── COLUNA PRINCIPAL ────────────────────────────────────────── */
+
+/*
+   Coluna que contém a imagem e o texto narrativo.
+   O Bootstrap já cuida da largura (col-md-9).
+   Aqui definimos apenas o comportamento interno.
+*/
+.scene-main {
+    display:        flex;
+    flex-direction: column;
+    min-height:     100vh;
+}
+
+
+/* ── ÁREA DE CONTEÚDO TEXTUAL ────────────────────────────────── */
+
+/*
+   Fica abaixo do SceneDisplayComponent (overlay de imagens).
+   max-width centraliza o texto em telas muito largas.
+*/
+.scene-content {
+    padding:    2rem 2rem 4rem;
+    max-width:  780px;
+    width:      100%;
+}
+
+
+/* ── EYEBROW DO ATO ──────────────────────────────────────────── */
+
+.scene-eyebrow {
+    font-family:    'Cinzel', serif;
+    font-size:      .65rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color:          var(--dk-mid);
+    margin-bottom:  .5rem;
+}
+
+
+/* ── TÍTULO DA CENA ──────────────────────────────────────────── */
+
+.scene-title {
+    font-family:   'Cinzel Decorative', serif;
+    font-size:     clamp(1.4rem, 3vw, 2rem);
+    font-weight:   700;
+    color:         var(--holy-bright);
+    line-height:   1.2;
+    margin-bottom: 1.2rem;
+
+    /* Glow sutil no título */
+    filter: drop-shadow(0 0 16px rgba(240,192,64,.2));
+}
+
+
+/* ── SEPARADOR DECORATIVO ────────────────────────────────────── */
+
+/*
+   Linha — gema — linha, igual ao ornamento da home
+   mas com tamanho menor para não competir com o título.
+*/
+.scene-divider {
+    display:         flex;
+    align-items:     center;
+    gap:             .8rem;
+    margin-bottom:   1.6rem;
+}
+
+.divider-line {
+    height:     1px;
+    width:      60px;
+    background: linear-gradient(90deg, transparent, var(--holy-dim));
+}
+
+.divider-line.right {
+    background: linear-gradient(90deg, var(--holy-dim), transparent);
+}
+
+.divider-gem {
+    width:      6px;
+    height:     6px;
+    background: var(--holy-dim);
+    transform:  rotate(45deg);
+}
+
+
+/* ── TEXTO NARRATIVO ─────────────────────────────────────────── */
+
+.narrative {
+    /* Borda esquerda sutil — mesmo padrão do home_and_design.html */
+    border-left: 2px solid var(--rim);
+    padding-left: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.narrative p {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   1.05rem;
+    color:       var(--txt-mid);
+    font-style:  italic;
+    line-height: 1.9;
+    margin:      0;
+
+    /*
+       white-space: pre-line preserva as quebras de linha (\n)
+       do texto narrativo armazenado no banco — cada parágrafo
+       separado por linha em branco aparece separado na tela.
+    */
+    white-space: pre-line;
+}
+
+
+/* ── CONTAINER DAS CHOICES ───────────────────────────────────── */
+
+/*
+   IMPORTANTE: counter-reset aqui inicializa o contador CSS
+   que o ChoiceButtonComponent usa para gerar as letras A, B, C.
+
+   Sem este counter-reset no pai, o counter do filho não
+   reseta entre cenas diferentes — as letras continuariam
+   acumulando de uma cena para outra.
+*/
+.choices-list {
+    display:        flex;
+    flex-direction: column;
+    gap:            .7rem;
+
+    /* Inicializa o counter — cada .choice-btn incrementa em 1 */
+    counter-reset: choice-counter;
+}
+
+/* Label acima das choices: "O que você faz?" */
+.choices-label {
+    font-family:    'Cinzel', serif;
+    font-size:      .65rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--holy-dim);
+    margin-bottom:  .3rem;
+}
+
+/* Mensagem quando não há choices na cena */
+.no-choices {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   .95rem;
+    color:       var(--txt-dim);
+    font-style:  italic;
+    text-align:  center;
+    padding:     1.5rem 0;
+}
+
+
+/* ── ESTADO: CARREGANDO ──────────────────────────────────────── */
+
+/*
+   Centralizado na tela enquanto aguarda a API.
+*/
+.loading-state {
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    justify-content: center;
+    min-height:      60vh;
+    gap:             1rem;
+}
+
+/*
+   Spinner: anel que gira via animação CSS.
+   O anel é criado com border — a borda superior tem cor
+   diferente para criar o efeito de rotação.
+*/
+.loading-spinner {
+    width:         40px;
+    height:        40px;
+    border:        3px solid var(--rim);
+    border-top-color: var(--holy-dim);
+    border-radius: 50%;
+    animation:     spin .8s linear infinite;
+}
+
+.loading-text {
+    font-family:    'Cinzel', serif;
+    font-size:      .7rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--txt-dim);
+}
+
+
+/* ── ESTADO: ERRO ────────────────────────────────────────────── */
+
+.erro-state {
+    display:         flex;
+    flex-direction:  column;
+    align-items:     center;
+    justify-content: center;
+    min-height:      60vh;
+    gap:             1.2rem;
+    padding:         2rem;
+    text-align:      center;
+}
+
+.erro-text {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   1rem;
+    color:       var(--blood-lt);
+    font-style:  italic;
+}
+
+
+/* ── POPUP DE PODER DESBLOQUEADO ─────────────────────────────── */
+
+/*
+   Aparece por 3 segundos quando o jogador avança de ato
+   e desbloqueia um poder novo. Sobrepõe todo o conteúdo.
+
+   position: fixed faz o popup ficar fixo na tela,
+   independente do scroll — sempre visível.
+*/
+.poder-popup {
+    position: fixed;
+    bottom:   2rem;
+    left:     50%;
+    transform: translateX(-50%);
+    z-index:  100;
+
+    /* Animação de entrada */
+    animation: fadeUp .4s var(--ease) both;
+}
+
+.poder-popup-inner {
+    background:    var(--deep);
+    border:        1px solid var(--holy-dim);
+    border-radius: 8px;
+    padding:       1.2rem 1.8rem;
+    text-align:    center;
+    min-width:     260px;
+
+    /* Glow dourado ao redor do popup */
+    box-shadow: 0 0 0 1px var(--holy-dim),
+    0 8px 32px rgba(240,192,64,.2);
+}
+
+/* "NOVO PODER DESBLOQUEADO" */
+.poder-popup-eyebrow {
+    font-family:    'Cinzel', serif;
+    font-size:      .58rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color:          var(--holy-dim);
+    margin-bottom:  .4rem;
+}
+
+/* Nome do poder — ex: "Destruição Divina" */
+.poder-popup-nome {
+    font-family:   'Cinzel Decorative', serif;
+    font-size:     1.1rem;
+    color:         var(--holy-bright);
+    margin-bottom: .4rem;
+
+    filter: drop-shadow(0 0 12px rgba(240,192,64,.4));
+}
+
+/* Dica abaixo do nome */
+.poder-popup-hint {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size:   .82rem;
+    color:       var(--txt-dim);
+    font-style:  italic;
+    margin:      0;
+}
+
+
+/* ── RESPONSIVIDADE ──────────────────────────────────────────── */
+
+/* Tablet e mobile: remove padding lateral excessivo */
+@media (max-width: 768px) {
+    .scene-content {
+        padding: 1.5rem 1.2rem 3rem;
+    }
+}
+
+/* Mobile: título menor */
+@media (max-width: 480px) {
+    .scene-title {
+        font-size: 1.3rem;
+    }
+
+    .poder-popup-inner {
+        min-width: 200px;
+        padding:   1rem 1.2rem;
+    }
+}

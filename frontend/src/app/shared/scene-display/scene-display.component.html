@@ -1,10 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!-- ===========================================================
+  ending.component.html — Overlay de imagens da cena.
 
-</body>
-</html>
+  Técnica de overlay (03_arquitetura_pastas.docx — seção 5):
+    - .scene-wrapper é o container relativo (position: relative)
+    - .background cobre 100% do container (position: absolute)
+    - .sprite fica na frente do fundo (z-index: 1)
+
+  Os @Input() background e sprite chegam do SceneComponent:
+    <app-scene-display
+      [background]="scene.background_image"
+      [sprite]="scene.sprite_image"
+    />
+
+  Os caminhos são montados aqui no template concatenando
+  o nome do arquivo com a pasta correta em assets/.
+  Ex: background = 'brill_town_day.jpg'
+  →   src = 'assets/backgrounds/brill_town_day.jpg'
+=========================================================== -->
+
+<div class="scene-wrapper">
+
+    <!--
+      Imagem de fundo do cenário.
+      object-fit: cover no CSS garante que a imagem preenche
+      o container sem distorcer, mesmo em tamanhos diferentes.
+      alt vazio: imagem decorativa — leitores de tela ignoram.
+    -->
+    <img
+            class="background"
+            [src]="'assets/backgrounds/' + background"
+            alt=""
+    />
+
+    <!--
+      Sprite do personagem ou NPC da cena.
+      Posicionado absolutamente na frente do fundo.
+      O CSS o centraliza horizontalmente e ancora na base.
+      alt vazio: imagem decorativa — contexto narrativo
+      está no texto da cena, não na imagem.
+    -->
+    <img
+            class="sprite"
+            [src]="'assets/sprites/' + sprite"
+            alt=""
+    />
+
+</div>
